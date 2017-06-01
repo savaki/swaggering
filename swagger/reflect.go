@@ -17,9 +17,52 @@ package swagger
 import (
 	"reflect"
 	"strings"
+	"time"
 )
 
+var customTypes map[reflect.Type]Property
+
+func init() {
+	customTypes = map[reflect.Type]Property{}
+
+	RegisterCustomType(time.Time{}, Property{
+		Type:   "string",
+		Format: "date-time",
+	})
+}
+
+// RegisterCustomType maps a reflect.Type to a pre-defined Property. This can be
+// used to handle types that implement json.Marshaler or other interfaces.
+// For example, a property with a Go type of time.Time would be represented as
+// an object when it should be a string.
+//
+//    RegisterCustomType(time.Time{}, Property{
+//      Type: "string",
+//      Format: "date-time",
+//    })
+//
+// Pointers to registered types will resolve to the same Property value unless
+// that pointer type has also been registered as a custom type.
+//
+// For example: registering time.Time will also apply to *time.Time, unless
+// *time.Time has also been registered.
+func RegisterCustomType(v interface{}, p Property) {
+	t := reflect.TypeOf(v)
+	p.GoType = t
+	customTypes[t] = p
+}
+
 func inspect(t reflect.Type, jsonTag string) Property {
+	if p, ok := customTypes[t]; ok {
+		return p
+	}
+
+	if t.Kind() == reflect.Ptr {
+		if p, ok := customTypes[t.Elem()]; ok {
+			return p
+		}
+	}
+
 	p := Property{
 		GoType: t,
 	}
@@ -206,6 +249,9 @@ func define(v interface{}) map[string]Object {
 		dirty = false
 		for _, d := range objMap {
 			for _, p := range d.Properties {
+				if _, ok := customTypes[p.GoType]; ok {
+					continue
+				}
 				if p.GoType.Kind() == reflect.Struct {
 					name := makeName(p.GoType)
 					if _, exists := objMap[name]; !exists {
