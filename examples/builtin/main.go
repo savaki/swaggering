@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/savaki/swag"
 	"github.com/savaki/swag/endpoint"
@@ -20,11 +21,13 @@ type Category struct {
 
 // Pet example from the swagger pet store
 type Pet struct {
-	ID        int64    `json:"id"`
-	Category  Category `json:"category"`
-	Name      string   `json:"name"`
-	PhotoUrls []string `json:"photoUrls"`
-	Tags      []string `json:"tags"`
+	ID        int64      `json:"id"`
+	Category  Category   `json:"category"`
+	Name      string     `json:"name"`
+	PhotoUrls []string   `json:"photoUrls"`
+	Tags      []string   `json:"tags"`
+	CreatedAt time.Time  `json:"createdAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
 }
 
 func main() {
