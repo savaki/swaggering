@@ -176,9 +176,15 @@ func Response(code int, prototype interface{}, description string, opts ...Respo
 			b.Endpoint.Responses = map[string]swagger.Response{}
 		}
 
+		var schema *swagger.Schema
+
+		if prototype != nil {
+			schema = swagger.MakeSchema(prototype)
+		}
+
 		r := swagger.Response{
 			Description: description,
-			Schema:      swagger.MakeSchema(prototype),
+			Schema:      schema,
 		}
 
 		for _, opt := range opts {
