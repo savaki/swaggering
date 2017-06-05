@@ -1,0 +1,33 @@
+{
+  "swaggerHorse": {
+    "type": "object",
+    "required": [
+      "age",
+      "thoroughbred",
+      "origin_country"
+    ],
+    "properties": {
+      "age": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "owner": {
+        "$ref": "#/definitions/swaggerPerson"
+      },
+      "origin_country": {
+        "type": "string"
+      },
+      "thoroughbred": {
+        "type": "boolean"
+      }
+    }
+  },
+  "swaggerPerson": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      }
+    }
+  }
+}
