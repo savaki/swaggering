@@ -119,14 +119,42 @@ func defineObject(v interface{}) Object {
 		}
 	}
 
+	walkFields(t, &properties, &required)
+	return Object{
+		IsArray:    isArray,
+		GoType:     t,
+		Type:       "object",
+		Name:       makeName(t),
+		Required:   required,
+		Properties: properties,
+	}
+}
+
+func walkFields(t reflect.Type, properties *map[string]Property, required *[]string) {
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
+
+		// If the field is an anonymous (embedded) struct then recurse and walk through
+		// it's fields, but add them at this level of the struct.
+		if field.Anonymous {
+			switch {
+			case field.Type.Kind() == reflect.Ptr:
+				walkFields(field.Type.Elem(), properties, required)
+				continue
+
+			case field.Type.Kind() == reflect.Struct:
+				walkFields(field.Type, properties, required)
+				continue
+
+			default:
+				// An anonymous field which is not a struct type - currently unsupported.
+			}
+		}
 
 		// determine the json name of the field
 		name := strings.TrimSpace(field.Tag.Get("json"))
 		if name == "" || strings.HasPrefix(name, ",") {
 			name = field.Name
-
 		} else {
 			// strip out things like , omitempty
 			parts := strings.Split(name, ",")
@@ -143,22 +171,13 @@ func defineObject(v interface{}) Object {
 		// determine if this field is required or not
 		if v := field.Tag.Get("required"); v == "true" {
 			if required == nil {
-				required = []string{}
+				*required = []string{}
 			}
-			required = append(required, name)
+			*required = append(*required, name)
 		}
 
 		p := inspect(field.Type, field.Tag.Get("json"))
-		properties[name] = p
-	}
-
-	return Object{
-		IsArray:    isArray,
-		GoType:     t,
-		Type:       "object",
-		Name:       makeName(t),
-		Required:   required,
-		Properties: properties,
+		(*properties)[name] = p
 	}
 }
 
