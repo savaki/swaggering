@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/savaki/swag/swagger"
+	"github.com/MarkSonghurst/swag/swagger"
 )
 
 // Builder uses the builder pattern to generate swagger endpoint definitions
@@ -105,6 +105,19 @@ func HeaderParam(name, typ, description string, required bool) Option {
 	return parameter(p)
 }
 
+// FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
+// swagger fields
+func FormData(name, typ, description string, required bool) Option {
+	p := swagger.Parameter{
+		Name:        name,
+		In:          "formData",
+		Type:        typ,
+		Description: description,
+		Required:    required,
+	}
+	return parameter(p)
+}
+
 // Body defines a body parameter for the swagger endpoint as would commonly be used for the POST, PUT, and PATCH methods
 // prototype should be a struct or a pointer to struct that swag can use to reflect upon the return type
 func Body(prototype interface{}, description string, required bool) Option {
@@ -126,6 +139,28 @@ func Tags(tags ...string) Option {
 		}
 
 		b.Endpoint.Tags = append(b.Endpoint.Tags, tags...)
+	}
+}
+
+// Security allows a security scheme to be associated with the endpoint.
+func Security(scheme string, scopes ...string) Option {
+	return func(b *Builder) {
+		if b.Endpoint.Security == nil {
+			b.Endpoint.Security = &swagger.SecurityRequirement{}
+		}
+
+		if b.Endpoint.Security.Requirements == nil {
+			b.Endpoint.Security.Requirements = []map[string][]string{}
+		}
+
+		b.Endpoint.Security.Requirements = append(b.Endpoint.Security.Requirements, map[string][]string{scheme: scopes})
+	}
+}
+
+// NoSecurity explicitly sets the endpoint to have no security requirements.
+func NoSecurity() Option {
+	return func(b *Builder) {
+		b.Endpoint.Security = &swagger.SecurityRequirement{DisableSecurity: true}
 	}
 }
 
@@ -154,9 +189,15 @@ func Response(code int, prototype interface{}, description string, opts ...Respo
 			b.Endpoint.Responses = map[string]swagger.Response{}
 		}
 
+		var schema *swagger.Schema
+
+		if prototype != nil {
+			schema = swagger.MakeSchema(prototype)
+		}
+
 		r := swagger.Response{
 			Description: description,
-			Schema:      swagger.MakeSchema(prototype),
+			Schema:      schema,
 		}
 
 		for _, opt := range opts {

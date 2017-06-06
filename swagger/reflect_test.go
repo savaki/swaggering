@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -23,6 +24,10 @@ type Pet struct {
 	IntArray    []int
 	String      string
 	StringArray []string
+	Time        time.Time
+	TimePtr     *time.Time
+
+	unexported string
 }
 
 type Empty struct {
@@ -55,7 +60,7 @@ func TestDefine(t *testing.T) {
 	obj, ok := v["swaggerPet"]
 	assert.True(t, ok)
 	assert.False(t, obj.IsArray)
-	assert.Equal(t, 8, len(obj.Properties))
+	assert.Equal(t, 10, len(obj.Properties))
 
 	content := map[string]Object{}
 	data, err := ioutil.ReadFile("testdata/pet.json")
@@ -159,4 +164,28 @@ func TestHonorJsonIgnore(t *testing.T) {
 	assert.True(t, ok)
 	assert.False(t, obj.IsArray)
 	assert.Equal(t, 0, len(obj.Properties), "expected zero exposed properties")
+}
+
+func TestCustomTypes(t *testing.T) {
+	type ContainsCustomType struct {
+		TestTime time.Time `json:"testTime"`
+	}
+
+	obj := defineObject(ContainsCustomType{})
+
+	assert.Contains(t, obj.Properties, "testTime")
+	assert.EqualValues(t, "string", obj.Properties["testTime"].Type)
+}
+
+func TestIgnoreUnexported(t *testing.T) {
+	type Test struct {
+		Exported   string
+		unexported string
+	}
+	v := define(Test{})
+	obj, ok := v["swaggerTest"]
+	assert.True(t, ok)
+	assert.Equal(t, 1, len(obj.Properties), "expected one exposed properties")
+	assert.Contains(t, obj.Properties, "Exported")
+	assert.NotContains(t, obj.Properties, "unexported")
 }
