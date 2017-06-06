@@ -123,6 +123,23 @@ func TestHeader(t *testing.T) {
 	assert.Equal(t, expected, e.Parameters[0])
 }
 
+func TestFormData(t *testing.T) {
+	expected := swagger.Parameter{
+		In:          "formData",
+		Name:        "id",
+		Description: "the description",
+		Required:    true,
+		Type:        "string",
+	}
+
+	e := endpoint.New("get", "/", "get thing",
+		endpoint.FormData(expected.Name, expected.Type, expected.Description, expected.Required),
+	)
+
+	assert.Equal(t, 1, len(e.Parameters))
+	assert.Equal(t, expected, e.Parameters[0])
+}
+
 type Model struct {
 	String string `json:"s"`
 }
