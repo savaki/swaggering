@@ -9,7 +9,7 @@ import (
 
 	"path/filepath"
 
-	"github.com/MarkSonghurst/swag/swagger"
+	"github.com/savaki/swag/swagger"
 	"github.com/stretchr/testify/assert"
 )
 

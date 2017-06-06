@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/MarkSonghurst/swag"
-	"github.com/MarkSonghurst/swag/endpoint"
-	"github.com/MarkSonghurst/swag/swagger"
+	"github.com/savaki/swag"
+	"github.com/savaki/swag/endpoint"
+	"github.com/savaki/swag/swagger"
 	"github.com/stretchr/testify/assert"
 )
 
