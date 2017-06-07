@@ -68,11 +68,12 @@ func parameter(p swagger.Parameter) Option {
 
 // Path defines a path parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Path(name, typ, description string, required bool) Option {
+func Path(name, typ, format, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "path",
 		Type:        typ,
+		Format:      format,
 		Description: description,
 		Required:    required,
 	}
@@ -81,11 +82,12 @@ func Path(name, typ, description string, required bool) Option {
 
 // Query defines a query parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Query(name, typ, description string, required bool) Option {
+func Query(name, typ, format, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
 		Type:        typ,
+		Format:      format,
 		Description: description,
 		Required:    required,
 	}
@@ -94,11 +96,12 @@ func Query(name, typ, description string, required bool) Option {
 
 // HeaderParam defines a header parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func HeaderParam(name, typ, description string, required bool) Option {
+func HeaderParam(name, typ, format, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "header",
 		Type:        typ,
+		Format:      format,
 		Description: description,
 		Required:    required,
 	}
@@ -107,11 +110,12 @@ func HeaderParam(name, typ, description string, required bool) Option {
 
 // FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func FormData(name, typ, description string, required bool) Option {
+func FormData(name, typ, format, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "formData",
 		Type:        typ,
+		Format:      format,
 		Description: description,
 		Required:    required,
 	}
