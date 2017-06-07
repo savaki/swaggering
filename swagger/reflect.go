@@ -170,6 +170,11 @@ func defineObject(v interface{}) Object {
 			continue
 		}
 
+		// skip fields tagged with `swagger:"-"`
+		if field.Tag.Get("swagger") == "-" {
+			continue
+		}
+
 		// determine the json name of the field
 		name := strings.TrimSpace(field.Tag.Get("json"))
 		if name == "" || strings.HasPrefix(name, ",") {

@@ -27,6 +27,8 @@ type Pet struct {
 	Time        time.Time
 	TimePtr     *time.Time
 
+	Skip string `swagger:"-"`
+
 	unexported string
 }
 
