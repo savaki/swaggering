@@ -39,7 +39,7 @@ type Parameter struct {
 	Required    bool    `json:"required"`
 	Schema      *Schema `json:"schema,omitempty"`
 	Type        string  `json:"type,omitempty"`
-	ArrayType   string  `json:"items,omitempty"`
+	ArrayItems  Items   `json:"items,omitempty"`
 	Format      string  `json:"format,omitempty"`
 }
 
