@@ -110,13 +110,13 @@ func HeaderParam(name, typ, format, description string, required bool) Option {
 
 // FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func FormData(name, typ, format string, arrayItem swagger.Parameter, description string, required bool) Option {
+func FormData(name, typ, format, arrayType string, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "formData",
 		Type:        typ,
 		Format:      format,
-		ArrayItem:   arrayItem,
+		ArrayType:   arrayType,
 		Description: description,
 		Required:    required,
 	}
