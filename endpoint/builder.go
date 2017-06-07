@@ -74,7 +74,7 @@ func Path(name, typ, format string, arrayItem swagger.Items, description string,
 		In:          "path",
 		Type:        typ,
 		Format:      format,
-		ArrayItem:   arrayItem,
+		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
 	}
@@ -89,7 +89,7 @@ func Query(name, typ, format string, arrayItem swagger.Items, description string
 		In:          "query",
 		Type:        typ,
 		Format:      format,
-		ArrayItem:   arrayItem,
+		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
 	}
@@ -104,7 +104,7 @@ func HeaderParam(name, typ, format string, arrayItem swagger.Items, description 
 		In:          "header",
 		Type:        typ,
 		Format:      format,
-		ArrayItem:   arrayItem,
+		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
 	}
@@ -119,7 +119,7 @@ func FormData(name, typ, format string, arrayItem swagger.Items, description str
 		In:          "formData",
 		Type:        typ,
 		Format:      format,
-		ArrayItem:   arrayItem,
+		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
 	}
