@@ -68,7 +68,7 @@ func parameter(p swagger.Parameter) Option {
 
 // Path defines a path parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Path(name, typ, format, arrayItem swagger.Items, description string, required bool) Option {
+func Path(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "path",
@@ -83,7 +83,7 @@ func Path(name, typ, format, arrayItem swagger.Items, description string, requir
 
 // Query defines a query parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Query(name, typ, format, arrayItem swagger.Items, description string, required bool) Option {
+func Query(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
@@ -98,7 +98,7 @@ func Query(name, typ, format, arrayItem swagger.Items, description string, requi
 
 // HeaderParam defines a header parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func HeaderParam(name, typ, format, arrayItem swagger.Items, description string, required bool) Option {
+func HeaderParam(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "header",
@@ -113,7 +113,7 @@ func HeaderParam(name, typ, format, arrayItem swagger.Items, description string,
 
 // FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func FormData(name, typ, format, arrayItem swagger.Items, description string, required bool) Option {
+func FormData(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "formData",
