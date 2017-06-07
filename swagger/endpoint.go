@@ -33,13 +33,14 @@ type Response struct {
 
 // Parameter represents a parameter from the swagger doc
 type Parameter struct {
-	In          string  `json:"in,omitempty"`
-	Name        string  `json:"name,omitempty"`
-	Description string  `json:"description,omitempty"`
-	Required    bool    `json:"required"`
-	Schema      *Schema `json:"schema,omitempty"`
-	Type        string  `json:"type,omitempty"`
-	Format      string  `json:"format,omitempty"`
+	In          string      `json:"in,omitempty"`
+	Name        string      `json:"name,omitempty"`
+	Description string      `json:"description,omitempty"`
+	Required    bool        `json:"required"`
+	Schema      *Schema     `json:"schema,omitempty"`
+	Type        string      `json:"type,omitempty"`
+	ArrayItems  []Parameter `json:"items,omitempty"`
+	Format      string      `json:"format,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc
