@@ -28,8 +28,8 @@ type Schema struct {
 	Prototype interface{} `json:"-"`
 }
 
-// Header represents a response header
-type Header struct {
+// ResponseHeader represents a response header
+type ResponseHeader struct {
 	Type        string `json:"type"`
 	Format      string `json:"format"`
 	Description string `json:"description"`
@@ -37,9 +37,9 @@ type Header struct {
 
 // Response represents a response from the swagger doc
 type Response struct {
-	Description string            `json:"description,omitempty"`
-	Schema      *Schema           `json:"schema,omitempty"`
-	Headers     map[string]Header `json:"headers,omitempty"`
+	Description string                    `json:"description,omitempty"`
+	Schema      *Schema                   `json:"schema,omitempty"`
+	Headers     map[string]ResponseHeader `json:"headers,omitempty"`
 }
 
 // Parameter represents a parameter from the swagger doc

@@ -78,11 +78,13 @@ func TestPath(t *testing.T) {
 		Name:        "id",
 		Description: "the description",
 		Required:    true,
-		Type:        "string",
+		Items: swagger.Items{
+			Type: "string",
+		},
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Path(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.Path(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -95,11 +97,13 @@ func TestQuery(t *testing.T) {
 		Name:        "id",
 		Description: "the description",
 		Required:    true,
-		Type:        "string",
+		Items: swagger.Items{
+			Type: "string",
+		},
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Query(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.Query(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -112,11 +116,13 @@ func TestHeader(t *testing.T) {
 		Name:        "id",
 		Description: "the description",
 		Required:    true,
-		Type:        "string",
+		Items: swagger.Items{
+			Type: "string",
+		},
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.HeaderParam(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.Header(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -129,11 +135,13 @@ func TestFormData(t *testing.T) {
 		Name:        "id",
 		Description: "the description",
 		Required:    true,
-		Type:        "string",
+		Items: swagger.Items{
+			Type: "string",
+		},
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.FormData(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.FormData(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -188,7 +196,7 @@ func TestResponseHeader(t *testing.T) {
 			Ref:       "#/definitions/endpoint_testModel",
 			Prototype: Model{},
 		},
-		Headers: map[string]swagger.Header{
+		Headers: map[string]swagger.ResponseHeader{
 			"X-Rate-Limit": {
 				Type:        "integer",
 				Format:      "int32",
@@ -199,7 +207,7 @@ func TestResponseHeader(t *testing.T) {
 
 	e := endpoint.New("get", "/", "get thing",
 		endpoint.Response(http.StatusOK, Model{}, "successful",
-			endpoint.Header("X-Rate-Limit", "integer", "int32", "calls per hour allowed by the user"),
+			endpoint.ResponseHeader("X-Rate-Limit", "integer", "int32", "calls per hour allowed by the user"),
 		),
 	)
 

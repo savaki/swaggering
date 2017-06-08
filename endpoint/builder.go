@@ -68,12 +68,11 @@ func parameter(p swagger.Parameter) Option {
 
 // Path defines a path parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Path(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
+func Path(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "path",
-		Type:        typ,
-		Format:      format,
+		Items:       item,
 		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
@@ -83,12 +82,11 @@ func Path(name, typ, format string, arrayItem swagger.Items, description string,
 
 // Query defines a query parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Query(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
+func Query(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
-		Type:        typ,
-		Format:      format,
+		Items:       item,
 		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
@@ -96,14 +94,13 @@ func Query(name, typ, format string, arrayItem swagger.Items, description string
 	return parameter(p)
 }
 
-// HeaderParam defines a header parameter for the endpoint; name, typ, description, and required correspond to the matching
+// Header defines a header parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func HeaderParam(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
+func Header(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "header",
-		Type:        typ,
-		Format:      format,
+		Items:       item,
 		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
@@ -113,12 +110,11 @@ func HeaderParam(name, typ, format string, arrayItem swagger.Items, description 
 
 // FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func FormData(name, typ, format string, arrayItem swagger.Items, description string, required bool) Option {
+func FormData(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "formData",
-		Type:        typ,
-		Format:      format,
+		Items:       item,
 		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
@@ -175,14 +171,14 @@ func NoSecurity() Option {
 // ResponseOption allows for additional configurations on responses like header information
 type ResponseOption func(response *swagger.Response)
 
-// Header adds header definitions to swagger responses
-func Header(name, typ, format, description string) ResponseOption {
+// ResponseHeader adds header definitions to swagger responses
+func ResponseHeader(name, typ, format, description string) ResponseOption {
 	return func(response *swagger.Response) {
 		if response.Headers == nil {
-			response.Headers = map[string]swagger.Header{}
+			response.Headers = map[string]swagger.ResponseHeader{}
 		}
 
-		response.Headers[name] = swagger.Header{
+		response.Headers[name] = swagger.ResponseHeader{
 			Type:        typ,
 			Format:      format,
 			Description: description,
