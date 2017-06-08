@@ -215,6 +215,32 @@ func TestResponseHeader(t *testing.T) {
 	assert.Equal(t, expected, e.Responses["200"])
 }
 
+func TestResponseExample(t *testing.T) {
+	example := Model{
+		String: "alpha",
+	}
+
+	expected := swagger.Response{
+		Description: "successful",
+		Schema: &swagger.Schema{
+			Ref:       "#/definitions/endpoint_testModel",
+			Prototype: Model{},
+		},
+		Examples: swagger.ResponseExamples{
+			"application/json": example,
+		},
+	}
+
+	e := endpoint.New("get", "/", "get thing",
+		endpoint.Response(http.StatusOK, Model{}, "successful",
+			endpoint.ResponseExample("application/json", example),
+		),
+	)
+
+	assert.Equal(t, 1, len(e.Responses))
+	assert.Equal(t, expected, e.Responses["200"])
+}
+
 func TestSecurityScheme(t *testing.T) {
 	api := swag.New(
 		swag.SecurityScheme("basic", swagger.BasicSecurity()),

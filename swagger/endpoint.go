@@ -39,11 +39,14 @@ type ResponseHeader struct {
 	Description string `json:"description"`
 }
 
+type ResponseExamples map[string]interface{}
+
 // Response represents a response from the swagger doc
 type Response struct {
 	Description string                    `json:"description,omitempty"`
 	Schema      *Schema                   `json:"schema,omitempty"`
 	Headers     map[string]ResponseHeader `json:"headers,omitempty"`
+	Examples    ResponseExamples          `json:"examples,omitempty"`
 }
 
 // Parameter represents a parameter from the swagger doc

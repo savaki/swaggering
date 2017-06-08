@@ -186,6 +186,16 @@ func ResponseHeader(name, typ, format, description string) ResponseOption {
 	}
 }
 
+// ResponseExample adds a MIME type specific example object to swagger responses
+func ResponseExample(mimetype string, obj interface{}) ResponseOption {
+	return func(response *swagger.Response) {
+		if response.Examples == nil {
+			response.Examples = make(swagger.ResponseExamples)
+		}
+		response.Examples[mimetype] = obj
+	}
+}
+
 // Response sets the endpoint response for the specified code; may be used multiple times with different status codes
 func Response(code int, prototype interface{}, description string, opts ...ResponseOption) Option {
 	return func(b *Builder) {
