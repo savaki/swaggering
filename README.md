@@ -7,6 +7,9 @@
  
 No code generation, no framework constraints, just a simple swagger definition.
 
+This is a self-contained fork of the original ```swag``` package written by savaki (https://github.com/savaki/swag)
+Thanks to savaki for starting the original package and to the other PR authors who's work I've merged in.
+
 The original ```swag``` package was heavily geared towards generating Swagger for APIs using ```application/json``` Request bodies - this fork additionally supports Swagger generation for APIs which accept Request bodies using the ```application/x-www-form-urlencoded``` and ```multipart/form-data``` MIME types.
 
 Please note there are some (relatively minor) package API differences from the original ```swag``` package.
@@ -25,7 +28,7 @@ This package is currently a work in progress.
 
 ## License
 
-At the time of writing, the original ```swag``` package contained no licence or copyright information. This fork maintains that lack of clarity.
+At the time of writing, the original ```swag``` package contains no licence or copyright information. Out of respect to the original Author, this fork maintains that lack of clarity.
 That said, as far as I'm concerned, any code I've written for this package is freely available and in the public domain.
 
 ## Concepts
