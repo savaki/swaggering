@@ -7,6 +7,17 @@ type Items struct {
 	Type   string `json:"type,omitempty"`
 	Format string `json:"format,omitempty"`
 	Ref    string `json:"$ref,omitempty"`
+
+	Minimum          int  `json:"minimum,omitempty"`
+	Maximum          int  `json:"maximum,omitempty"`
+	MinItems         int  `json:"minItems,omitempty"`
+	MaxItems         int  `json:"maxItems,omitempty"`
+	UniqueItems      bool `json:"uniqueItems,omitempty"`
+	MinLength        int  `json:"minLength,omitempty"`
+	MaxLength        int  `json:"maxLength,omitempty"`
+	ExclusiveMinimum bool `json:"exclusiveMinimum,omitempty"`
+	ExclusiveMaximum bool `json:"exclusiveMaximum,omitempty"`
+	MultipleOf       int  `json:"multipleOf,omitempty"`
 }
 
 // Schema represents a schema from the swagger doc
@@ -38,9 +49,8 @@ type Parameter struct {
 	Description string  `json:"description,omitempty"`
 	Required    bool    `json:"required"`
 	Schema      *Schema `json:"schema,omitempty"`
-	Type        string  `json:"type,omitempty"`
-	ArrayItems  Items   `json:"items,omitempty"`
-	Format      string  `json:"format,omitempty"`
+	Items
+	ArrayItems Items `json:"items,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc
