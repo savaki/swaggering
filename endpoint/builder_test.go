@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/savaki/swag/endpoint"
-	"github.com/savaki/swag/swagger"
+	"github.com/MarkSonghurst/swag"
+	"github.com/MarkSonghurst/swag/endpoint"
+	"github.com/MarkSonghurst/swag/swagger"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -77,11 +78,13 @@ func TestPath(t *testing.T) {
 		Name:        "id",
 		Description: "the description",
 		Required:    true,
-		Type:        "string",
+		Items: swagger.Items{
+			Type: "string",
+		},
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Path(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.Path(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -94,11 +97,51 @@ func TestQuery(t *testing.T) {
 		Name:        "id",
 		Description: "the description",
 		Required:    true,
-		Type:        "string",
+		Items: swagger.Items{
+			Type: "string",
+		},
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Query(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.Query(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
+	)
+
+	assert.Equal(t, 1, len(e.Parameters))
+	assert.Equal(t, expected, e.Parameters[0])
+}
+
+func TestHeader(t *testing.T) {
+	expected := swagger.Parameter{
+		In:          "header",
+		Name:        "id",
+		Description: "the description",
+		Required:    true,
+		Items: swagger.Items{
+			Type: "string",
+		},
+	}
+
+	e := endpoint.New("get", "/", "get thing",
+		endpoint.Header(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
+	)
+
+	assert.Equal(t, 1, len(e.Parameters))
+	assert.Equal(t, expected, e.Parameters[0])
+}
+
+func TestFormData(t *testing.T) {
+	expected := swagger.Parameter{
+		In:          "formData",
+		Name:        "id",
+		Description: "the description",
+		Required:    true,
+		Items: swagger.Items{
+			Type: "string",
+		},
+	}
+
+	e := endpoint.New("get", "/", "get thing",
+		endpoint.FormData(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -153,7 +196,7 @@ func TestResponseHeader(t *testing.T) {
 			Ref:       "#/definitions/endpoint_testModel",
 			Prototype: Model{},
 		},
-		Headers: map[string]swagger.Header{
+		Headers: map[string]swagger.ResponseHeader{
 			"X-Rate-Limit": {
 				Type:        "integer",
 				Format:      "int32",
@@ -164,10 +207,42 @@ func TestResponseHeader(t *testing.T) {
 
 	e := endpoint.New("get", "/", "get thing",
 		endpoint.Response(http.StatusOK, Model{}, "successful",
-			endpoint.Header("X-Rate-Limit", "integer", "int32", "calls per hour allowed by the user"),
+			endpoint.ResponseHeader("X-Rate-Limit", "integer", "int32", "calls per hour allowed by the user"),
 		),
 	)
 
 	assert.Equal(t, 1, len(e.Responses))
 	assert.Equal(t, expected, e.Responses["200"])
+}
+
+func TestSecurityScheme(t *testing.T) {
+	api := swag.New(
+		swag.SecurityScheme("basic", swagger.BasicSecurity()),
+		swag.SecurityScheme("apikey", swagger.APIKeySecurity("Authorization", "header")),
+	)
+	assert.Len(t, api.SecurityDefinitions, 2)
+	assert.Contains(t, api.SecurityDefinitions, "basic")
+	assert.Contains(t, api.SecurityDefinitions, "apikey")
+	assert.Equal(t, "header", api.SecurityDefinitions["apikey"].In)
+}
+
+func TestSecurity(t *testing.T) {
+	e := endpoint.New("get", "/", "",
+		endpoint.Handler(Echo),
+		endpoint.Security("basic"),
+		endpoint.Security("oauth2", "scope1", "scope2"),
+	)
+	assert.False(t, e.Security.DisableSecurity)
+	assert.Len(t, e.Security.Requirements, 2)
+	assert.Contains(t, e.Security.Requirements[0], "basic")
+	assert.Contains(t, e.Security.Requirements[1], "oauth2")
+	assert.Len(t, e.Security.Requirements[1]["oauth2"], 2)
+}
+
+func TestNoSecurity(t *testing.T) {
+	e := endpoint.New("get", "/", "",
+		endpoint.Handler(Echo),
+		endpoint.NoSecurity(),
+	)
+	assert.True(t, e.Security.DisableSecurity)
 }

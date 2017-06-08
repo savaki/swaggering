@@ -1,26 +1,32 @@
 # swag
 
-[![GoDoc](https://godoc.org/github.com/savaki/swag?status.svg)](https://godoc.org/github.com/savaki/swag)
-[![Build Status](https://travis-ci.org/savaki/swag.svg?branch=master)](https://travis-ci.org/savaki/swag)
+[![GoDoc](https://godoc.org/github.com/savaki/swag?status.svg)](https://godoc.org/github.com/MarkSonghurst/swag)
+[![Build Status](https://travis-ci.org/savaki/swag.svg?branch=master)](https://travis-ci.org/MarkSonghurst/swag)
 
-```swag``` is a lightweight library to generate swagger json for Go projects.  
+```swag``` is a lightweight library to generate swagger JSON for Go projects.  
  
 No code generation, no framework constraints, just a simple swagger definition.
 
-```swag``` is heavily geared towards generating REST/JSON apis.
+The original ```swag``` package was heavily geared towards generating Swagger for APIs using ```application/json``` Request bodies - this fork additionally supports Swagger generation for APIs which accept Request bodies using the ```application/x-www-form-urlencoded``` and ```multipart/form-data``` MIME types.
 
+Please note there are some (relatively minor) package API differences from the original ```swag``` package.
 
 ## Installation
 
 ```bash
-go get github.com/savaki/swag
+go get github.com/MarkSonghurst/swag
 ```
 
 
 ## Status
 
-This package should be considered a release candidate.  No further package changes are expected at this point. 
+This package is currently a work in progress.
 
+
+## License
+
+At the time of writing, the original ```swag``` package contained no licence or copyright information. This fork maintains that lack of clarity.
+That said, as far as I'm concerned, any code I've written for this package is freely available and in the public domain.
 
 ## Concepts
 
@@ -48,7 +54,7 @@ allPets := endpoint.New("get", "/pet", "Return all the pets",
 ) 
 ```
 
-Refer to the [godoc](https://godoc.org/github.com/savaki/swag/endpoint) for a list of all the endpoint options
+Refer to the [godoc](https://godoc.org/github.com/MarkSonghurst/swag/endpoint) for a list of all the endpoint options
 
 ### Walk
 
@@ -70,6 +76,29 @@ api.Walk(func(path string, endpoint *swagger.Endpoint) {
     router.Handle(endpoint.Method, path, h)
 })
 ```
+
+### Custom Types
+
+For types implementing `json.Marshaler` whose JSON output does not match their Go types (such as `time.Time`),
+it is possible to override the default scanning of types and define a property manually.
+
+For example:
+
+```go
+type Person struct {
+  Name string `json:"name"`
+  Birthday time.Time `json:"birthday"`
+}
+
+func main() {
+  RegisterCustomType(time.Time{}, Property{
+    Type: "string",
+    Format: "date-time",
+  })
+}
+```
+
+`time.Time` is automatically registered as a custom type.
 
 ## Complete Example
 
@@ -126,9 +155,9 @@ func main() {
 
 Examples for popular web frameworks can be found in the examples directory:
 
-* [http.Server](examples/builtin/main.go)
-* [Echo](examples/echo/main.go)
-* [Gin](examples/gin/main.go)
-* [Gorilla](examples/gorilla/main.go)
-* [httprouter](examples/httprouter/main.go)
+* [http.Server](_examples/builtin/main.go)
+* [Echo](_examples/echo/main.go)
+* [Gin](_examples/gin/main.go)
+* [Gorilla](_examples/gorilla/main.go)
+* [httprouter](_examples/httprouter/main.go)
 
