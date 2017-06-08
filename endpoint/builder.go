@@ -68,7 +68,7 @@ func parameter(p swagger.Parameter) Option {
 
 // Path defines a path parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Path(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
+func Path(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "path",
@@ -82,7 +82,7 @@ func Path(name string, item swagger.Items, arrayItem swagger.Items, description 
 
 // Query defines a query parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Query(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
+func Query(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
@@ -96,7 +96,7 @@ func Query(name string, item swagger.Items, arrayItem swagger.Items, description
 
 // Header defines a header parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Header(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
+func Header(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "header",
@@ -110,7 +110,7 @@ func Header(name string, item swagger.Items, arrayItem swagger.Items, descriptio
 
 // FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func FormData(name string, item swagger.Items, arrayItem swagger.Items, description string, required bool) Option {
+func FormData(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "formData",

@@ -84,7 +84,7 @@ func TestPath(t *testing.T) {
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Path(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
+		endpoint.Path(expected.Name, expected.Items, nil, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -103,7 +103,7 @@ func TestQuery(t *testing.T) {
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Query(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
+		endpoint.Query(expected.Name, expected.Items, nil, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -122,7 +122,7 @@ func TestHeader(t *testing.T) {
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Header(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
+		endpoint.Header(expected.Name, expected.Items, nil, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -141,7 +141,7 @@ func TestFormData(t *testing.T) {
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.FormData(expected.Name, expected.Items, swagger.Items{}, expected.Description, expected.Required),
+		endpoint.FormData(expected.Name, expected.Items, nil, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))

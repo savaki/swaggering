@@ -6,18 +6,22 @@ import "encoding/json"
 type Items struct {
 	Type   string `json:"type,omitempty"`
 	Format string `json:"format,omitempty"`
-	Ref    string `json:"$ref,omitempty"`
+
+	// A Ref is a non-simple (object) type
+	Ref string `json:"$ref,omitempty"`
 
 	Minimum          int  `json:"minimum,omitempty"`
 	Maximum          int  `json:"maximum,omitempty"`
-	MinItems         int  `json:"minItems,omitempty"`
-	MaxItems         int  `json:"maxItems,omitempty"`
-	UniqueItems      bool `json:"uniqueItems,omitempty"`
 	MinLength        int  `json:"minLength,omitempty"`
 	MaxLength        int  `json:"maxLength,omitempty"`
 	ExclusiveMinimum bool `json:"exclusiveMinimum,omitempty"`
 	ExclusiveMaximum bool `json:"exclusiveMaximum,omitempty"`
 	MultipleOf       int  `json:"multipleOf,omitempty"`
+
+	// Swagger 2.0 states these fields are only applicable to arrays
+	MinItems    int  `json:"minItems,omitempty"`
+	MaxItems    int  `json:"maxItems,omitempty"`
+	UniqueItems bool `json:"uniqueItems,omitempty"`
 }
 
 // Schema represents a schema from the swagger doc
@@ -50,7 +54,7 @@ type Parameter struct {
 	Required    bool    `json:"required"`
 	Schema      *Schema `json:"schema,omitempty"`
 	Items
-	ArrayItems Items `json:"items,omitempty"`
+	ArrayItems *Items `json:"items,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc
