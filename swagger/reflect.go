@@ -3,9 +3,52 @@ package swagger
 import (
 	"reflect"
 	"strings"
+	"time"
 )
 
+var customTypes map[reflect.Type]Property
+
+func init() {
+	customTypes = map[reflect.Type]Property{}
+
+	RegisterCustomType(time.Time{}, Property{
+		Type:   "string",
+		Format: "date-time",
+	})
+}
+
+// RegisterCustomType maps a reflect.Type to a pre-defined Property. This can be
+// used to handle types that implement json.Marshaler or other interfaces.
+// For example, a property with a Go type of time.Time would be represented as
+// an object when it should be a string.
+//
+//    RegisterCustomType(time.Time{}, Property{
+//      Type: "string",
+//      Format: "date-time",
+//    })
+//
+// Pointers to registered types will resolve to the same Property value unless
+// that pointer type has also been registered as a custom type.
+//
+// For example: registering time.Time will also apply to *time.Time, unless
+// *time.Time has also been registered.
+func RegisterCustomType(v interface{}, p Property) {
+	t := reflect.TypeOf(v)
+	p.GoType = t
+	customTypes[t] = p
+}
+
 func inspect(t reflect.Type, jsonTag string) Property {
+	if p, ok := customTypes[t]; ok {
+		return p
+	}
+
+	if t.Kind() == reflect.Ptr {
+		if p, ok := customTypes[t.Elem()]; ok {
+			return p
+		}
+	}
+
 	p := Property{
 		GoType: t,
 	}
@@ -119,14 +162,47 @@ func defineObject(v interface{}) Object {
 		}
 	}
 
+	walkFields(t, &properties, &required)
+	return Object{
+		IsArray:    isArray,
+		GoType:     t,
+		Type:       "object",
+		Name:       makeName(t),
+		Required:   required,
+		Properties: properties,
+	}
+}
+
+func walkFields(t reflect.Type, properties *map[string]Property, required *[]string) {
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
+
+		// skip unexported fields
+		if strings.ToLower(field.Name[0:1]) == field.Name[0:1] {
+			continue
+		}
+
+		// If the field is an anonymous (embedded) struct then recurse and walk through
+		// it's fields, but add them at this level of the struct.
+		if field.Anonymous {
+			switch {
+			case field.Type.Kind() == reflect.Ptr:
+				walkFields(field.Type.Elem(), properties, required)
+				continue
+
+			case field.Type.Kind() == reflect.Struct:
+				walkFields(field.Type, properties, required)
+				continue
+
+			default:
+				// An anonymous field which is not a struct type - currently unsupported.
+			}
+		}
 
 		// determine the json name of the field
 		name := strings.TrimSpace(field.Tag.Get("json"))
 		if name == "" || strings.HasPrefix(name, ",") {
 			name = field.Name
-
 		} else {
 			// strip out things like , omitempty
 			parts := strings.Split(name, ",")
@@ -143,22 +219,13 @@ func defineObject(v interface{}) Object {
 		// determine if this field is required or not
 		if v := field.Tag.Get("required"); v == "true" {
 			if required == nil {
-				required = []string{}
+				*required = []string{}
 			}
-			required = append(required, name)
+			*required = append(*required, name)
 		}
 
 		p := inspect(field.Type, field.Tag.Get("json"))
-		properties[name] = p
-	}
-
-	return Object{
-		IsArray:    isArray,
-		GoType:     t,
-		Type:       "object",
-		Name:       makeName(t),
-		Required:   required,
-		Properties: properties,
+		(*properties)[name] = p
 	}
 }
 
@@ -174,6 +241,9 @@ func define(v interface{}) map[string]Object {
 		dirty = false
 		for _, d := range objMap {
 			for _, p := range d.Properties {
+				if _, ok := customTypes[p.GoType]; ok {
+					continue
+				}
 				if p.GoType.Kind() == reflect.Struct {
 					name := makeName(p.GoType)
 					if _, exists := objMap[name]; !exists {

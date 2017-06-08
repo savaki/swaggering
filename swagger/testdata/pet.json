@@ -33,6 +33,14 @@
           "type": "string"
         }
       },
+      "Time": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "TimePtr": {
+        "type": "string",
+        "format": "date-time"
+      },
       "friend": {
         "$ref": "#/definitions/swaggerPerson"
       },
