@@ -16,6 +16,12 @@ type reflectType interface {
 }
 
 func makeName(t reflectType) string {
-	name := filepath.Base(t.PkgPath()) + t.Name()
+	var name string
+	pkgPath := t.PkgPath()
+	if pkgPath == "" {
+		name = t.Name()
+	} else {
+		name = filepath.Base(pkgPath) + t.Name()
+	}
 	return strings.Replace(name, "-", "_", -1)
 }

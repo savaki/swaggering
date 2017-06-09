@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/savaki/swag/swagger"
+	"github.com/MarkSonghurst/swag/swagger"
 )
 
 // Builder uses the builder pattern to generate swagger endpoint definitions
@@ -68,11 +68,12 @@ func parameter(p swagger.Parameter) Option {
 
 // Path defines a path parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Path(name, typ, description string, required bool) Option {
+func Path(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "path",
-		Type:        typ,
+		Items:       item,
+		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
 	}
@@ -81,11 +82,40 @@ func Path(name, typ, description string, required bool) Option {
 
 // Query defines a query parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Query(name, typ, description string, required bool) Option {
+func Query(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
-		Type:        typ,
+		Items:       item,
+		ArrayItems:  arrayItem,
+		Description: description,
+		Required:    required,
+	}
+	return parameter(p)
+}
+
+// Header defines a header parameter for the endpoint; name, typ, description, and required correspond to the matching
+// swagger fields
+func Header(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
+	p := swagger.Parameter{
+		Name:        name,
+		In:          "header",
+		Items:       item,
+		ArrayItems:  arrayItem,
+		Description: description,
+		Required:    required,
+	}
+	return parameter(p)
+}
+
+// FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
+// swagger fields
+func FormData(name string, item swagger.Items, arrayItem *swagger.Items, description string, required bool) Option {
+	p := swagger.Parameter{
+		Name:        name,
+		In:          "formData",
+		Items:       item,
+		ArrayItems:  arrayItem,
 		Description: description,
 		Required:    required,
 	}
@@ -116,21 +146,53 @@ func Tags(tags ...string) Option {
 	}
 }
 
+// Security allows a security scheme to be associated with the endpoint.
+func Security(scheme string, scopes ...string) Option {
+	return func(b *Builder) {
+		if b.Endpoint.Security == nil {
+			b.Endpoint.Security = &swagger.SecurityRequirement{}
+		}
+
+		if b.Endpoint.Security.Requirements == nil {
+			b.Endpoint.Security.Requirements = []map[string][]string{}
+		}
+
+		b.Endpoint.Security.Requirements = append(b.Endpoint.Security.Requirements, map[string][]string{scheme: scopes})
+	}
+}
+
+// NoSecurity explicitly sets the endpoint to have no security requirements.
+func NoSecurity() Option {
+	return func(b *Builder) {
+		b.Endpoint.Security = &swagger.SecurityRequirement{DisableSecurity: true}
+	}
+}
+
 // ResponseOption allows for additional configurations on responses like header information
 type ResponseOption func(response *swagger.Response)
 
-// Header adds header definitions to swagger responses
-func Header(name, typ, format, description string) ResponseOption {
+// ResponseHeader adds header definitions to swagger responses
+func ResponseHeader(name, typ, format, description string) ResponseOption {
 	return func(response *swagger.Response) {
 		if response.Headers == nil {
-			response.Headers = map[string]swagger.Header{}
+			response.Headers = map[string]swagger.ResponseHeader{}
 		}
 
-		response.Headers[name] = swagger.Header{
+		response.Headers[name] = swagger.ResponseHeader{
 			Type:        typ,
 			Format:      format,
 			Description: description,
 		}
+	}
+}
+
+// ResponseExample adds a MIME type specific example object to swagger responses
+func ResponseExample(mimetype string, obj interface{}) ResponseOption {
+	return func(response *swagger.Response) {
+		if response.Examples == nil {
+			response.Examples = make(swagger.ResponseExamples)
+		}
+		response.Examples[mimetype] = obj
 	}
 }
 
@@ -141,9 +203,15 @@ func Response(code int, prototype interface{}, description string, opts ...Respo
 			b.Endpoint.Responses = map[string]swagger.Response{}
 		}
 
+		var schema *swagger.Schema
+
+		if prototype != nil {
+			schema = swagger.MakeSchema(prototype)
+		}
+
 		r := swagger.Response{
 			Description: description,
-			Schema:      swagger.MakeSchema(prototype),
+			Schema:      schema,
 		}
 
 		for _, opt := range opts {
