@@ -1,4 +1,20 @@
+// Copyright 2017 Matt Ho
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package swagger
+
+import "encoding/json"
 
 // Items represents items from the swagger doc
 type Items struct {
@@ -53,4 +69,20 @@ type Endpoint struct {
 	Handler     interface{}         `json:"-"`
 	Parameters  []Parameter         `json:"parameters,omitempty"`
 	Responses   map[string]Response `json:"responses,omitempty"`
+
+	// swagger spec requires security to be an array of objects
+	Security *SecurityRequirement `json:"security,omitempty"`
+}
+
+type SecurityRequirement struct {
+	Requirements    []map[string][]string
+	DisableSecurity bool
+}
+
+func (s *SecurityRequirement) MarshalJSON() ([]byte, error) {
+	if s.DisableSecurity {
+		return []byte("[]"), nil
+	}
+
+	return json.Marshal(s.Requirements)
 }

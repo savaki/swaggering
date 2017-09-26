@@ -1,3 +1,17 @@
+// Copyright 2017 Matt Ho
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package endpoint_test
 
 import (
@@ -5,6 +19,9 @@ import (
 	"net/http"
 	"testing"
 
+	"reflect"
+
+	"github.com/savaki/swag"
 	"github.com/savaki/swag/endpoint"
 	"github.com/savaki/swag/swagger"
 	"github.com/stretchr/testify/assert"
@@ -117,7 +134,7 @@ func TestBody(t *testing.T) {
 		Required:    true,
 		Schema: &swagger.Schema{
 			Ref:       "#/definitions/endpoint_testModel",
-			Prototype: Model{},
+			Prototype: reflect.TypeOf(Model{}),
 		},
 	}
 
@@ -134,7 +151,7 @@ func TestResponse(t *testing.T) {
 		Description: "successful",
 		Schema: &swagger.Schema{
 			Ref:       "#/definitions/endpoint_testModel",
-			Prototype: Model{},
+			Prototype: reflect.TypeOf(Model{}),
 		},
 	}
 
@@ -151,7 +168,7 @@ func TestResponseHeader(t *testing.T) {
 		Description: "successful",
 		Schema: &swagger.Schema{
 			Ref:       "#/definitions/endpoint_testModel",
-			Prototype: Model{},
+			Prototype: reflect.TypeOf(Model{}),
 		},
 		Headers: map[string]swagger.Header{
 			"X-Rate-Limit": {
@@ -170,4 +187,36 @@ func TestResponseHeader(t *testing.T) {
 
 	assert.Equal(t, 1, len(e.Responses))
 	assert.Equal(t, expected, e.Responses["200"])
+}
+
+func TestSecurityScheme(t *testing.T) {
+	api := swag.New(
+		swag.SecurityScheme("basic", swagger.BasicSecurity()),
+		swag.SecurityScheme("apikey", swagger.APIKeySecurity("Authorization", "header")),
+	)
+	assert.Len(t, api.SecurityDefinitions, 2)
+	assert.Contains(t, api.SecurityDefinitions, "basic")
+	assert.Contains(t, api.SecurityDefinitions, "apikey")
+	assert.Equal(t, "header", api.SecurityDefinitions["apikey"].In)
+}
+
+func TestSecurity(t *testing.T) {
+	e := endpoint.New("get", "/", "",
+		endpoint.Handler(Echo),
+		endpoint.Security("basic"),
+		endpoint.Security("oauth2", "scope1", "scope2"),
+	)
+	assert.False(t, e.Security.DisableSecurity)
+	assert.Len(t, e.Security.Requirements, 2)
+	assert.Contains(t, e.Security.Requirements[0], "basic")
+	assert.Contains(t, e.Security.Requirements[1], "oauth2")
+	assert.Len(t, e.Security.Requirements[1]["oauth2"], 2)
+}
+
+func TestNoSecurity(t *testing.T) {
+	e := endpoint.New("get", "/", "",
+		endpoint.Handler(Echo),
+		endpoint.NoSecurity(),
+	)
+	assert.True(t, e.Security.DisableSecurity)
 }
