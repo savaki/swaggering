@@ -27,6 +27,9 @@
       "String": {
         "type": "string"
       },
+      "StringPtr": {
+        "type": "string"
+      },
       "StringArray": {
         "type": "array",
         "items": {

@@ -43,9 +43,7 @@ func inspect(t reflect.Type, jsonTag string) Property {
 		p.Ref = makeRef(name)
 
 	case reflect.Ptr:
-		p.GoType = t.Elem()
-		name := makeName(p.GoType)
-		p.Ref = makeRef(name)
+		return inspect(t.Elem(), jsonTag)
 
 	case reflect.Slice:
 		p.Type = "array"
