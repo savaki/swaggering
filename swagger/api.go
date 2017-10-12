@@ -232,7 +232,7 @@ type API struct {
 	Schemes             []string                  `json:"schemes,omitempty"`
 	Paths               map[string]*Endpoints     `json:"paths,omitempty"`
 	Definitions         map[string]Object         `json:"definitions,omitempty"`
-	Tags                []Tag                     `json:"tags"`
+	Tags                []Tag                     `json:"tags,omitempty"`
 	Host                string                    `json:"host"`
 	SecurityDefinitions map[string]SecurityScheme `json:"securityDefinitions,omitempty"`
 	Security            *SecurityRequirement      `json:"security,omitempty"`
