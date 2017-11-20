@@ -63,8 +63,6 @@ func main() {
 	router := mux.NewRouter()
 	api.Walk(func(path string, endpoint *swagger.Endpoint) {
 		h := endpoint.Handler.(http.HandlerFunc)
-		path = swag.ColonPath(path)
-
 		router.Path(path).Methods(endpoint.Method).Handler(h)
 	})
 
