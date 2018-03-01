@@ -48,6 +48,9 @@ func init() {
 // *time.Time has also been registered.
 func RegisterCustomType(v interface{}, p Property) {
 	t := reflect.TypeOf(v)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
 	p.GoType = t
 	customTypes[t] = p
 }
