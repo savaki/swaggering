@@ -112,6 +112,19 @@ func Query(name, typ, description string, required bool) Option {
 	return parameter(p)
 }
 
+// FormData defines a formData parameter for the endpoint; name, typ, description, and required correspond to the matching
+// swagger fields
+func FormData(name, typ, description string, required bool) Option {
+	p := swagger.Parameter{
+		Name:        name,
+		In:          "formData",
+		Type:        typ,
+		Description: description,
+		Required:    required,
+	}
+	return parameter(p)
+}
+
 // Body defines a body parameter for the swagger endpoint as would commonly be used for the POST, PUT, and PATCH methods
 // prototype should be a struct or a pointer to struct that swag can use to reflect upon the return type
 // t represents the Type of the body
