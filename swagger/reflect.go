@@ -55,19 +55,41 @@ func RegisterCustomType(v interface{}, p Property) {
 	customTypes[t] = p
 }
 
-func inspect(t reflect.Type, jsonTag string) Property {
+func inspect(t reflect.Type, tag *reflect.StructTag) Property {
+	var jsonTag string
+	var desc string
+	var example string
+	if tag != nil {
+		jsonTag = tag.Get("json")
+		desc = tag.Get("description")
+		example = tag.Get("example")
+	}
 	if p, ok := customTypes[t]; ok {
+		if p.Description == "" {
+			p.Description = desc
+		}
+		if p.Example == "" {
+			p.Example = example
+		}
 		return p
 	}
 
 	if t.Kind() == reflect.Ptr {
 		if p, ok := customTypes[t.Elem()]; ok {
+			if p.Description == "" {
+				p.Description = desc
+			}
+			if p.Example == "" {
+				p.Example = example
+			}
 			return p
 		}
 	}
 
 	p := Property{
-		GoType: t,
+		GoType:      t,
+		Description: desc,
+		Example:     example,
 	}
 
 	if strings.Contains(jsonTag, ",string") {
@@ -168,7 +190,7 @@ func defineObject(v interface{}) Object {
 	}
 
 	if t.Kind() != reflect.Struct {
-		p := inspect(t, "")
+		p := inspect(t, nil)
 		return Object{
 			IsArray:  isArray,
 			GoType:   t,
@@ -218,7 +240,7 @@ func defineObject(v interface{}) Object {
 			required = append(required, name)
 		}
 
-		p := inspect(field.Type, field.Tag.Get("json"))
+		p := inspect(field.Type, &field.Tag)
 		properties[name] = p
 	}
 
