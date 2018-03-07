@@ -167,6 +167,19 @@ func defineObject(v interface{}) Object {
 			required = append(required, name)
 		}
 
+		// support go-playground/validator binding tags
+		if v := field.Tag.Get("binding"); v != "" {
+			parts := strings.Split(v, ",") // "gt=0,dive,len=1,dive,required"
+			for _, a := range parts {
+				if a == "required" {
+					if required == nil {
+						required = []string{}
+					}
+					required = append(required, name)
+				}
+			}
+		}
+
 		p := inspect(field.Type, field.Tag.Get("json"))
 		properties[name] = p
 	}
