@@ -17,7 +17,7 @@ package swag_test
 import (
 	"testing"
 
-	"github.com/savaki/swag"
+	"github.com/miketonks/swag"
 	"github.com/stretchr/testify/assert"
 )
 
