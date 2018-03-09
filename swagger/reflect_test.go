@@ -38,6 +38,7 @@ type Pet struct {
 	IntArray    []int
 	String      string
 	StringArray []string
+	StringPtr   *string
 	Time        time.Time
 	TimePtr     *time.Time
 
@@ -59,7 +60,7 @@ func TestDefine(t *testing.T) {
 	obj, ok := v["swaggerPet"]
 	assert.True(t, ok)
 	assert.False(t, obj.IsArray)
-	assert.Equal(t, 10, len(obj.Properties))
+	assert.Equal(t, 11, len(obj.Properties))
 
 	content := map[string]Object{}
 	data, err := ioutil.ReadFile("testdata/pet.json")

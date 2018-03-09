@@ -27,7 +27,10 @@
       "String": {
         "type": "string"
       },
-      "StringArray": {
+      "StringPtr": {
+        "type": "string"
+      },
+       "StringArray": {
         "type": "array",
         "items": {
           "type": "string"
