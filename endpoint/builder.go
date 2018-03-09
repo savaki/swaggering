@@ -88,11 +88,12 @@ func parameter(p swagger.Parameter) Option {
 
 // Path defines a path parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Path(name, typ, description string, required bool) Option {
+func Path(name, typ, format, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "path",
 		Type:        typ,
+		Format:      format,
 		Description: description,
 		Required:    required,
 	}
