@@ -27,13 +27,14 @@ import (
 
 // Object represents the object entity from the swagger definition
 type Object struct {
-	IsArray    bool                `json:"-"`
-	GoType     reflect.Type        `json:"-"`
-	Name       string              `json:"-"`
-	Type       string              `json:"type"`
-	Format     string              `json:"format,omitempty"`
-	Required   []string            `json:"required,omitempty"`
-	Properties map[string]Property `json:"properties,omitempty"`
+	IsArray              bool                `json:"-"`
+	GoType               reflect.Type        `json:"-"`
+	Name                 string              `json:"-"`
+	Type                 string              `json:"type"`
+	Format               string              `json:"format,omitempty"`
+	Required             []string            `json:"required,omitempty"`
+	Properties           map[string]Property `json:"properties,omitempty"`
+	AdditionalProperties bool                `json:"additionalProperties"`
 }
 
 // Property represents the property entity from the swagger definition
