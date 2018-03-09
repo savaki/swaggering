@@ -18,6 +18,8 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 var customTypes map[reflect.Type]Property
@@ -28,6 +30,11 @@ func init() {
 	RegisterCustomType(time.Time{}, Property{
 		Type:   "string",
 		Format: "date-time",
+	})
+
+	RegisterCustomType(uuid.UUID{}, Property{
+		Type:   "string",
+		Format: "uuid",
 	})
 }
 
