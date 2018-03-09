@@ -19,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/globalsign/mgo/bson"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -33,6 +34,11 @@ func init() {
 	})
 
 	RegisterCustomType(uuid.UUID{}, Property{
+		Type:   "string",
+		Format: "uuid",
+	})
+
+	RegisterCustomType(bson.Binary{}, Property{
 		Type:   "string",
 		Format: "uuid",
 	})
