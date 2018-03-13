@@ -26,8 +26,8 @@ func init() {
 	customTypes = map[reflect.Type]Property{}
 
 	RegisterCustomType(time.Time{}, Property{
-		Type:    "string",
-		Pattern: `\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z`,
+		Type:   "string",
+		Format: "date-time",
 	})
 }
 
