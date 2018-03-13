@@ -72,6 +72,7 @@ func inspect(t reflect.Type, jsonTag string) Property {
 
 	if t.Kind() == reflect.Ptr {
 		if p, ok := customTypes[t.Elem()]; ok {
+			p.Nullable = true
 			return p
 		}
 	}
@@ -113,7 +114,9 @@ func inspect(t reflect.Type, jsonTag string) Property {
 		p.Ref = makeRef(name)
 
 	case reflect.Ptr:
-		return inspect(t.Elem(), jsonTag)
+		p := inspect(t.Elem(), jsonTag)
+		p.Nullable = true
+		return p
 
 	case reflect.Slice:
 		p.Type = "array"
