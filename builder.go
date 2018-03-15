@@ -174,17 +174,10 @@ func New(options ...Option) *swagger.API {
 			Swagger:  "2.0",
 			Schemes:  []string{"http"},
 			Info: swagger.Info{
-				Contact: swagger.Contact{
-					Email: "your-email-address",
-				},
-				Description:    "Describe your API",
-				Title:          "Your API Title",
-				Version:        "SNAPSHOT",
-				TermsOfService: "http://swagger.io/terms/",
-				License: swagger.License{
-					Name: "Apache 2.0",
-					URL:  "http://www.apache.org/licenses/LICENSE-2.0.html",
-				},
+				Contact:     swagger.Contact{},
+				Description: "Describe your API",
+				Title:       "Your API Title",
+				License:     swagger.License{},
 			},
 		},
 	}

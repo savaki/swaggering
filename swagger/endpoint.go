@@ -54,7 +54,7 @@ type Parameter struct {
 	Schema      *Schema `json:"schema,omitempty"`
 	Type        string  `json:"type,omitempty"`
 	Format      string  `json:"format,omitempty"`
-	Nullable    bool    `json:"nullable,omitempty"`
+	Nullable    bool    `json:"x-nullable,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc

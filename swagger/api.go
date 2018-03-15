@@ -48,7 +48,7 @@ type Property struct {
 	Ref         string       `json:"$ref,omitempty"`
 	Example     string       `json:"example,omitempty"`
 	Items       *Items       `json:"items,omitempty"`
-	Nullable    bool         `json:"nullable,omitempty"`
+	Nullable    bool         `json:"x-nullable,omitempty"`
 }
 
 // Contact represents the contact entity from the swagger definition; used by Info
@@ -235,7 +235,7 @@ type API struct {
 	Schemes             []string                  `json:"schemes,omitempty"`
 	Paths               map[string]*Endpoints     `json:"paths,omitempty"`
 	Definitions         map[string]Object         `json:"definitions,omitempty"`
-	Tags                []Tag                     `json:"tags"`
+	Tags                []Tag                     `json:"tags,omitempty"`
 	Host                string                    `json:"host"`
 	SecurityDefinitions map[string]SecurityScheme `json:"securityDefinitions,omitempty"`
 	Security            *SecurityRequirement      `json:"security,omitempty"`
