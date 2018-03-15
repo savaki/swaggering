@@ -100,6 +100,21 @@ func Path(name, typ, format, description string, required bool) Option {
 	return parameter(p)
 }
 
+// PathMap allows us to define multiple path parameters in a map / struct format
+func PathMap(params map[string]swagger.Parameter) Option {
+	return func(b *Builder) {
+		if b.Endpoint.Parameters == nil {
+			b.Endpoint.Parameters = []swagger.Parameter{}
+		}
+
+		for k, v := range params {
+			v.Name = k
+			v.In = "path"
+			b.Endpoint.Parameters = append(b.Endpoint.Parameters, v)
+		}
+	}
+}
+
 // Query defines a query parameter for the endpoint; name, typ, format, description, and required correspond to the matching
 // swagger fields
 func Query(name, typ, format, description string, required bool) Option {
@@ -112,6 +127,21 @@ func Query(name, typ, format, description string, required bool) Option {
 		Required:    required,
 	}
 	return parameter(p)
+}
+
+// QueryMap allows us to define multiple query parameters in a map / struct format
+func QueryMap(params map[string]swagger.Parameter) Option {
+	return func(b *Builder) {
+		if b.Endpoint.Parameters == nil {
+			b.Endpoint.Parameters = []swagger.Parameter{}
+		}
+
+		for k, v := range params {
+			v.Name = k
+			v.In = "query"
+			b.Endpoint.Parameters = append(b.Endpoint.Parameters, v)
+		}
+	}
 }
 
 // FormData defines a form data parameter for the endpoint; name, typ, format, description, and required correspond to the matching
@@ -128,7 +158,22 @@ func FormData(name, typ, format, description string, required bool) Option {
 	return parameter(p)
 }
 
-// Body defines a body parameter for the swagger endpoint as would commonly be used for the POST, PUT, and PATCH methods
+// FormDataMap allows us to define multiple form data parameters in a map / struct format
+func FormDataMap(params map[string]swagger.Parameter) Option {
+	return func(b *Builder) {
+		if b.Endpoint.Parameters == nil {
+			b.Endpoint.Parameters = []swagger.Parameter{}
+		}
+
+		for k, v := range params {
+			v.Name = k
+			v.In = "formData"
+			b.Endpoint.Parameters = append(b.Endpoint.Parameters, v)
+		}
+	}
+}
+
+// BodyType defines a body parameter for the swagger endpoint as would commonly be used for the POST, PUT, and PATCH methods
 // prototype should be a struct or a pointer to struct that swag can use to reflect upon the return type
 // t represents the Type of the body
 func BodyType(t reflect.Type, description string, required bool) Option {
@@ -200,6 +245,19 @@ func Header(name, typ, format, description string) ResponseOption {
 			Type:        typ,
 			Format:      format,
 			Description: description,
+		}
+	}
+}
+
+// HeaderMap allows us to define multiple headers in a map / struct format
+func HeaderMap(headers map[string]swagger.Header) ResponseOption {
+	return func(response *swagger.Response) {
+		if response.Headers == nil {
+			response.Headers = map[string]swagger.Header{}
+		}
+
+		for k, v := range headers {
+			response.Headers[k] = v
 		}
 	}
 }
