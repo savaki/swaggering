@@ -88,14 +88,14 @@ func parameter(p swagger.Parameter) Option {
 
 // Path defines a path parameter for the endpoint; name, typ, format, description, and required correspond to the matching
 // swagger fields
-func Path(name, typ, format, description string, required bool) Option {
+func Path(name, typ, format, description string) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "path",
 		Type:        typ,
 		Format:      format,
 		Description: description,
-		Required:    required,
+		Required:    true,
 	}
 	return parameter(p)
 }
@@ -110,6 +110,7 @@ func PathMap(params map[string]swagger.Parameter) Option {
 		for k, v := range params {
 			v.Name = k
 			v.In = "path"
+			v.Required = true
 			b.Endpoint.Parameters = append(b.Endpoint.Parameters, v)
 		}
 	}
@@ -272,7 +273,10 @@ func ResponseType(code int, t reflect.Type, description string, opts ...Response
 
 		r := swagger.Response{
 			Description: description,
-			Schema:      swagger.MakeSchema(t),
+			//Schema:      swagger.MakeSchema(t),
+		}
+		if t.Kind() != reflect.String {
+			r.Schema = swagger.MakeSchema(t)
 		}
 
 		for _, opt := range opts {
