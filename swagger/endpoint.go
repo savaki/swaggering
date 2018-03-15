@@ -34,8 +34,8 @@ type Schema struct {
 // Header represents a response header
 type Header struct {
 	Type        string `json:"type"`
-	Format      string `json:"format"`
-	Description string `json:"description"`
+	Format      string `json:"format,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 // Response represents a response from the swagger doc

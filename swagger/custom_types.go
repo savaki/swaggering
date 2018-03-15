@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/globalsign/mgo/bson"
 	uuid "github.com/satori/go.uuid"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // Time is used to store time without date

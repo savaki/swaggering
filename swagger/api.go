@@ -64,12 +64,12 @@ type License struct {
 
 // Info represents the info entity from the swagger definition
 type Info struct {
-	Description    string  `json:"description,omitempty"`
-	Version        string  `json:"version,omitempty"`
-	TermsOfService string  `json:"termsOfService,omitempty"`
-	Title          string  `json:"title,omitempty"`
-	Contact        Contact `json:"contact"`
-	License        License `json:"license"`
+	Description    string   `json:"description,omitempty"`
+	Version        string   `json:"version,omitempty"`
+	TermsOfService string   `json:"termsOfService,omitempty"`
+	Title          string   `json:"title,omitempty"`
+	Contact        *Contact `json:"contact,omitempty"`
+	License        *License `json:"license,omitempty"`
 }
 
 // SecurityScheme represents a security scheme from the swagger definition.
