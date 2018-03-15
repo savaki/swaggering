@@ -17,73 +17,7 @@ package swagger
 import (
 	"reflect"
 	"strings"
-	"time"
-
-	"github.com/globalsign/mgo/bson"
-	uuid "github.com/satori/go.uuid"
 )
-
-// Time is used to store time without date
-type Time struct {
-	time.Time
-}
-
-// Date is used to store date without time
-type Date struct {
-	time.Time
-}
-
-var customTypes map[reflect.Type]Property
-
-func init() {
-	customTypes = map[reflect.Type]Property{}
-
-	RegisterCustomType(time.Time{}, Property{
-		Type:   "string",
-		Format: "date-time",
-	})
-
-	RegisterCustomType(Date{}, Property{
-		Type:    "string",
-		Pattern: "^\\d\\d:\\d\\d:\\d\\d$",
-	})
-
-	RegisterCustomType(Time{}, Property{
-		Type:    "string",
-		Pattern: "^\\d\\d-\\d\\d-\\d\\d$",
-	})
-
-	RegisterCustomType(uuid.UUID{}, Property{
-		Type:   "string",
-		Format: "uuid",
-	})
-
-	RegisterCustomType(bson.Binary{}, Property{
-		Type:   "string",
-		Format: "uuid",
-	})
-}
-
-// RegisterCustomType maps a reflect.Type to a pre-defined Property. This can be
-// used to handle types that implement json.Marshaler or other interfaces.
-// For example, a property with a Go type of time.Time would be represented as
-// an object when it should be a string.
-//
-//    RegisterCustomType(time.Time{}, Property{
-//      Type: "string",
-//      Format: "date-time",
-//    })
-//
-// Pointers to registered types will resolve to the same Property value unless
-// that pointer type has also been registered as a custom type.
-//
-// For example: registering time.Time will also apply to *time.Time, unless
-// *time.Time has also been registered.
-func RegisterCustomType(v interface{}, p Property) {
-	t := reflect.TypeOf(v)
-	p.GoType = t
-	customTypes[t] = p
-}
 
 func inspect(t reflect.Type, jsonTag string) Property {
 	if p, ok := customTypes[t]; ok {
