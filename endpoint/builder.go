@@ -273,7 +273,6 @@ func ResponseType(code int, t reflect.Type, description string, opts ...Response
 
 		r := swagger.Response{
 			Description: description,
-			//Schema:      swagger.MakeSchema(t),
 		}
 		if t.Kind() != reflect.String {
 			r.Schema = swagger.MakeSchema(t)
