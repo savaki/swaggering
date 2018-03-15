@@ -44,6 +44,7 @@ type Property struct {
 	Description string       `json:"description,omitempty"`
 	Enum        []string     `json:"enum,omitempty"`
 	Format      string       `json:"format,omitempty"`
+	Pattern     string       `json:"pattern,omitempty"`
 	Ref         string       `json:"$ref,omitempty"`
 	Example     string       `json:"example,omitempty"`
 	Items       *Items       `json:"items,omitempty"`

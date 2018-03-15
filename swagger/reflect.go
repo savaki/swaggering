@@ -23,6 +23,16 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// Time is used to store time without date
+type Time struct {
+	time.Time
+}
+
+// Date is used to store date without time
+type Date struct {
+	time.Time
+}
+
 var customTypes map[reflect.Type]Property
 
 func init() {
@@ -31,6 +41,16 @@ func init() {
 	RegisterCustomType(time.Time{}, Property{
 		Type:   "string",
 		Format: "date-time",
+	})
+
+	RegisterCustomType(Date{}, Property{
+		Type:    "string",
+		Pattern: "^\\d\\d:\\d\\d:\\d\\d$",
+	})
+
+	RegisterCustomType(Time{}, Property{
+		Type:    "string",
+		Pattern: "^\\d\\d-\\d\\d-\\d\\d$",
 	})
 
 	RegisterCustomType(uuid.UUID{}, Property{

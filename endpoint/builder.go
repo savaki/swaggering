@@ -86,7 +86,7 @@ func parameter(p swagger.Parameter) Option {
 	}
 }
 
-// Path defines a path parameter for the endpoint; name, typ, description, and required correspond to the matching
+// Path defines a path parameter for the endpoint; name, typ, format, description, and required correspond to the matching
 // swagger fields
 func Path(name, typ, format, description string, required bool) Option {
 	p := swagger.Parameter{
@@ -100,13 +100,28 @@ func Path(name, typ, format, description string, required bool) Option {
 	return parameter(p)
 }
 
-// Query defines a query parameter for the endpoint; name, typ, description, and required correspond to the matching
+// Query defines a query parameter for the endpoint; name, typ, format, description, and required correspond to the matching
 // swagger fields
-func Query(name, typ, description string, required bool) Option {
+func Query(name, typ, format, description string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
 		Type:        typ,
+		Format:      format,
+		Description: description,
+		Required:    required,
+	}
+	return parameter(p)
+}
+
+// FormData defines a form data parameter for the endpoint; name, typ, format, description, and required correspond to the matching
+// swagger fields
+func FormData(name, typ, format, description string, required bool) Option {
+	p := swagger.Parameter{
+		Name:        name,
+		In:          "formData",
+		Type:        typ,
+		Format:      format,
 		Description: description,
 		Required:    required,
 	}
