@@ -362,12 +362,20 @@ func (a *API) Handler(enableCors bool) http.HandlerFunc {
 			scheme = "http"
 		}
 
-		hostAndScheme := req.Host + ":" + scheme
+		host := ""
+		if h := req.Header.Get("X-Forwarded-Host"); h != "" {
+			host = h
+		}
+		if host == "" {
+			host = req.Host
+		}
+		hostAndScheme := host + ":" + scheme
+
 		mux.Lock()
 		v, ok := byHostAndScheme[hostAndScheme]
 		if !ok {
 			v = a.clone()
-			v.Host = req.Host
+			v.Host = host
 			v.Schemes = []string{scheme}
 			byHostAndScheme[hostAndScheme] = v
 		}
