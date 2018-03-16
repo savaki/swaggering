@@ -56,6 +56,12 @@ type APIResponse struct {
 }
 
 func TestDefine(t *testing.T) {
+	UsePackageName = false
+	v1 := define(Pet{})
+	_, ok1 := v1["Pet"]
+	assert.True(t, ok1)
+
+	UsePackageName = true
 	v := define(Pet{})
 	obj, ok := v["swaggerPet"]
 	assert.True(t, ok)

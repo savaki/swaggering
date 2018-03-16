@@ -55,15 +55,17 @@ func Title(v string) Option {
 // ContactEmail sets info.contact.email
 func ContactEmail(v string) Option {
 	return func(builder *Builder) {
-		builder.API.Info.Contact.Email = v
+		builder.API.Info.Contact = &swagger.Contact{Email: v}
 	}
 }
 
 // License sets both info.license.name and info.license.url
 func License(name, url string) Option {
 	return func(builder *Builder) {
-		builder.API.Info.License.Name = name
-		builder.API.Info.License.URL = url
+		builder.API.Info.License = &swagger.License{
+			Name: name,
+			URL:  url,
+		}
 	}
 }
 

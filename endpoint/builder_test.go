@@ -95,10 +95,11 @@ func TestPath(t *testing.T) {
 		Description: "the description",
 		Required:    true,
 		Type:        "string",
+		Format:      "",
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Path(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.Path(expected.Name, expected.Type, expected.Format, expected.Description),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -112,10 +113,11 @@ func TestQuery(t *testing.T) {
 		Description: "the description",
 		Required:    true,
 		Type:        "string",
+		Format:      "",
 	}
 
 	e := endpoint.New("get", "/", "get thing",
-		endpoint.Query(expected.Name, expected.Type, expected.Description, expected.Required),
+		endpoint.Query(expected.Name, expected.Type, expected.Format, expected.Description, expected.Required),
 	)
 
 	assert.Equal(t, 1, len(e.Parameters))
@@ -133,7 +135,7 @@ func TestBody(t *testing.T) {
 		Description: "the description",
 		Required:    true,
 		Schema: &swagger.Schema{
-			Ref:       "#/definitions/endpoint_testModel",
+			Ref:       "#/definitions/Model",
 			Prototype: reflect.TypeOf(Model{}),
 		},
 	}
@@ -150,7 +152,7 @@ func TestResponse(t *testing.T) {
 	expected := swagger.Response{
 		Description: "successful",
 		Schema: &swagger.Schema{
-			Ref:       "#/definitions/endpoint_testModel",
+			Ref:       "#/definitions/Model",
 			Prototype: reflect.TypeOf(Model{}),
 		},
 	}
@@ -167,7 +169,7 @@ func TestResponseHeader(t *testing.T) {
 	expected := swagger.Response{
 		Description: "successful",
 		Schema: &swagger.Schema{
-			Ref:       "#/definitions/endpoint_testModel",
+			Ref:       "#/definitions/Model",
 			Prototype: reflect.TypeOf(Model{}),
 		},
 		Headers: map[string]swagger.Header{
