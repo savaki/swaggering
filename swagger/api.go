@@ -236,7 +236,7 @@ type API struct {
 	Paths               map[string]*Endpoints     `json:"paths,omitempty"`
 	Definitions         map[string]Object         `json:"definitions,omitempty"`
 	Tags                []Tag                     `json:"tags,omitempty"`
-	Host                string                    `json:"host"`
+	Host                string                    `json:"host,omitempty"`
 	SecurityDefinitions map[string]SecurityScheme `json:"securityDefinitions,omitempty"`
 	Security            *SecurityRequirement      `json:"security,omitempty"`
 }
@@ -393,4 +393,9 @@ func (a *API) Walk(callback func(path string, endpoints *Endpoint)) {
 			callback(u, endpoint)
 		})
 	}
+}
+
+// RenderJSON returns the static swagger schema, as json
+func (a *API) RenderJSON() ([]byte, error) {
+	return json.MarshalIndent(a, "", "  ")
 }
