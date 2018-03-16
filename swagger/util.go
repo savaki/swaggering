@@ -20,6 +20,9 @@ import (
 	"strings"
 )
 
+// UsePackageName can be set to true to add package prefix of generated definition names
+var UsePackageName = false
+
 func makeRef(name string) string {
 	return fmt.Sprintf("#/definitions/%v", name)
 }
@@ -30,6 +33,11 @@ type reflectType interface {
 }
 
 func makeName(t reflectType) string {
-	name := filepath.Base(t.PkgPath()) + t.Name()
+	var name string
+	if UsePackageName {
+		name = filepath.Base(t.PkgPath()) + t.Name()
+	} else {
+		name = filepath.Base(t.Name())
+	}
 	return strings.Replace(name, "-", "_", -1)
 }
