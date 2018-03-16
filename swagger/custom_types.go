@@ -5,9 +5,6 @@ import (
 	"reflect"
 	"strings"
 	"time"
-
-	"github.com/globalsign/mgo/bson"
-	uuid "github.com/satori/go.uuid"
 )
 
 // Time is used to store time without date
@@ -77,16 +74,6 @@ func init() {
 	RegisterCustomType(Time{}, Property{
 		Type:    "string",
 		Pattern: "^\\d\\d-\\d\\d-\\d\\d$",
-	})
-
-	RegisterCustomType(uuid.UUID{}, Property{
-		Type:   "string",
-		Format: "uuid",
-	})
-
-	RegisterCustomType(bson.Binary{}, Property{
-		Type:   "string",
-		Format: "uuid",
 	})
 }
 
