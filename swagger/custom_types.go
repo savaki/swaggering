@@ -17,11 +17,15 @@ type Date struct {
 	time.Time
 }
 
+// UUID is used to store UUID values
+type UUID string
+
 const dtLayout = "2006-01-02"
 const tmLayout = "15:04:05"
 
 var nilTime = (time.Time{}).UnixNano()
 
+// UnmarshalJSON handler for Date type
 func (d *Date) UnmarshalJSON(b []byte) (err error) {
 	s := strings.Trim(string(b), "\"")
 	if s == "null" {
@@ -32,6 +36,7 @@ func (d *Date) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
+// MarshalJSON handler for Date type
 func (d *Date) MarshalJSON() ([]byte, error) {
 	if d.Time.UnixNano() == nilTime {
 		return []byte("null"), nil
@@ -39,6 +44,7 @@ func (d *Date) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("\"%s\"", d.Time.Format(dtLayout))), nil
 }
 
+// UnmarshalJSON handler for Time type
 func (t *Time) UnmarshalJSON(b []byte) (err error) {
 	s := strings.Trim(string(b), "\"")
 	if s == "null" {
@@ -49,6 +55,7 @@ func (t *Time) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
+// MarshalJSON handler for Time type
 func (t *Time) MarshalJSON() ([]byte, error) {
 	if t.Time.UnixNano() == nilTime {
 		return []byte("null"), nil
@@ -74,6 +81,11 @@ func init() {
 	RegisterCustomType(Time{}, Property{
 		Type:    "string",
 		Pattern: "^\\d\\d-\\d\\d-\\d\\d$",
+	})
+
+	RegisterCustomType(UUID(""), Property{
+		Type:   "string",
+		Format: "uuid",
 	})
 }
 
