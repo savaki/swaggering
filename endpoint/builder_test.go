@@ -222,3 +222,31 @@ func TestNoSecurity(t *testing.T) {
 	)
 	assert.True(t, e.Security.DisableSecurity)
 }
+
+func TestInvalidParamType(t *testing.T) {
+	assert.Panics(t, func() {
+		_ = endpoint.New("post", "/", "",
+			endpoint.Body(Model{}, "desc", false),
+			endpoint.FormData("foo", "string", "", "desc", false),
+		)
+	})
+
+	assert.Panics(t, func() {
+		_ = endpoint.New("post", "/", "",
+			endpoint.FormData("foo", "string", "", "desc", false),
+			endpoint.Body(Model{}, "desc", false),
+		)
+	})
+
+	assert.NotPanics(t, func() {
+		_ = endpoint.New("post", "/", "",
+			endpoint.FormData("foo", "string", "", "desc", false),
+		)
+	})
+
+	assert.NotPanics(t, func() {
+		_ = endpoint.New("post", "/", "",
+			endpoint.Body(Model{}, "desc", false),
+		)
+	})
+}

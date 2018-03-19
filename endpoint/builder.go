@@ -15,6 +15,7 @@
 package endpoint
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -23,9 +24,32 @@ import (
 	"github.com/miketonks/swag/swagger"
 )
 
+const (
+	typeNotSpecified = iota
+	typeForm
+	typeJSON
+)
+
 // Builder uses the builder pattern to generate swagger endpoint definitions
 type Builder struct {
-	Endpoint *swagger.Endpoint
+	Endpoint  *swagger.Endpoint
+	paramType int
+}
+
+// ensureParamType ensures we cannot mix form and body data
+func (b *Builder) ensureParamType(in string) {
+	switch in {
+	case "formData":
+		if b.paramType == typeJSON {
+			panic(fmt.Errorf(`Cannot mix form and body parameters`))
+		}
+		b.paramType = typeForm
+	case "body":
+		if b.paramType == typeForm {
+			panic(fmt.Errorf(`Cannot mix form and body parameters`))
+		}
+		b.paramType = typeJSON
+	}
 }
 
 // Option represents a functional option to customize the swagger endpoint
@@ -78,6 +102,7 @@ func Consumes(v ...string) Option {
 
 func parameter(p swagger.Parameter) Option {
 	return func(b *Builder) {
+		b.ensureParamType(p.In)
 		if b.Endpoint.Parameters == nil {
 			b.Endpoint.Parameters = []swagger.Parameter{}
 		}
@@ -162,6 +187,7 @@ func FormData(name, typ, format, description string, required bool) Option {
 // FormDataMap allows us to define multiple form data parameters in a map / struct format
 func FormDataMap(params map[string]swagger.Parameter) Option {
 	return func(b *Builder) {
+		b.ensureParamType("formData")
 		if b.Endpoint.Parameters == nil {
 			b.Endpoint.Parameters = []swagger.Parameter{}
 		}
