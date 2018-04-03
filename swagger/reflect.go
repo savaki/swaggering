@@ -72,6 +72,9 @@ func inspect(t reflect.Type, jsonTag string) Property {
 		p.Nullable = true
 		return p
 
+	case reflect.Map:
+		p.Type = "object"
+
 	case reflect.Slice:
 		p.Type = "array"
 		p.Items = &Items{}
