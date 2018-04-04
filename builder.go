@@ -174,7 +174,6 @@ func New(options ...Option) *swagger.API {
 		API: &swagger.API{
 			BasePath: "/",
 			Swagger:  "2.0",
-			Schemes:  []string{"http"},
 			Info: swagger.Info{
 				Description: "Describe your API",
 				Title:       "Your API Title",

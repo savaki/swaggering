@@ -22,7 +22,6 @@ import (
 	"path"
 	"reflect"
 	"strings"
-	"sync"
 )
 
 // Object represents the object entity from the swagger definition
@@ -332,9 +331,6 @@ func (a *API) AddEndpoint(e *Endpoint) {
 // Handler is a factory method that generates an http.HandlerFunc; if enableCors is true, then the handler will generate
 // cors headers
 func (a *API) Handler(enableCors bool) http.HandlerFunc {
-	mux := &sync.Mutex{}
-	byHostAndScheme := map[string]*API{}
-
 	return func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -346,42 +342,7 @@ func (a *API) Handler(enableCors bool) http.HandlerFunc {
 
 		w.WriteHeader(http.StatusOK)
 
-		// customize the swagger header based on host
-		//
-		scheme := ""
-		if req.TLS != nil {
-			scheme = "https"
-		}
-		if v := req.Header.Get("X-Forwarded-Proto"); v != "" {
-			scheme = v
-		}
-		if scheme == "" {
-			scheme = req.URL.Scheme
-		}
-		if scheme == "" {
-			scheme = "http"
-		}
-
-		host := ""
-		if h := req.Header.Get("X-Forwarded-Host"); h != "" {
-			host = h
-		}
-		if host == "" {
-			host = req.Host
-		}
-		hostAndScheme := host + ":" + scheme
-
-		mux.Lock()
-		v, ok := byHostAndScheme[hostAndScheme]
-		if !ok {
-			v = a.clone()
-			v.Host = host
-			v.Schemes = []string{scheme}
-			byHostAndScheme[hostAndScheme] = v
-		}
-		mux.Unlock()
-
-		json.NewEncoder(w).Encode(v)
+		json.NewEncoder(w).Encode(a)
 	}
 }
 
