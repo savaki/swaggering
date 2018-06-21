@@ -91,8 +91,12 @@ func inspect(t reflect.Type, jsonTag string) Property {
 			p.Items.Ref = makeRef(name)
 
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Uint8, reflect.Uint16, reflect.Uint32:
-			p.Items.Type = "integer"
-			p.Items.Format = "int32"
+			if p.GoType.PkgPath() == "encoding/json" && p.GoType.Name() == "RawMessage" {
+				p.Type = "object"
+			} else {
+				p.Items.Type = "integer"
+				p.Items.Format = "int32"
+			}
 
 		case reflect.Int64, reflect.Uint64:
 			p.Items.Type = "integer"
