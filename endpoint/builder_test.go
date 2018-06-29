@@ -208,6 +208,7 @@ func TestSecurity(t *testing.T) {
 		endpoint.Security("basic"),
 		endpoint.Security("oauth2", "scope1", "scope2"),
 	)
+	assert.Equal(t, e.Security.Requirements[0]["basic"], []string{})
 	assert.False(t, e.Security.DisableSecurity)
 	assert.Len(t, e.Security.Requirements, 2)
 	assert.Contains(t, e.Security.Requirements[0], "basic")

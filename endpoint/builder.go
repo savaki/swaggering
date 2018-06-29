@@ -234,6 +234,9 @@ func Tags(tags ...string) Option {
 // Security allows a security scheme to be associated with the endpoint.
 func Security(scheme string, scopes ...string) Option {
 	return func(b *Builder) {
+		if scopes == nil {
+			scopes = []string{}
+		}
 		if b.Endpoint.Security == nil {
 			b.Endpoint.Security = &swagger.SecurityRequirement{}
 		}
