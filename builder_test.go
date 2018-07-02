@@ -122,4 +122,5 @@ func TestSecurity(t *testing.T) {
 	)
 	assert.Len(t, api.Security.Requirements, 1)
 	assert.Contains(t, api.Security.Requirements[0], "basic")
+	assert.Equal(t, []string{}, api.Security.Requirements[0]["basic"])
 }

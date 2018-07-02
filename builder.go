@@ -156,6 +156,9 @@ func SecurityScheme(name string, options ...swagger.SecuritySchemeOption) Option
 // Security sets a default security scheme for all endpoints in the API.
 func Security(scheme string, scopes ...string) Option {
 	return func(b *Builder) {
+		if scopes == nil {
+			scopes = []string{}
+		}
 		if b.API.Security == nil {
 			b.API.Security = &swagger.SecurityRequirement{}
 		}
