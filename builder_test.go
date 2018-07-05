@@ -113,7 +113,34 @@ func TestSecurityScheme(t *testing.T) {
 	assert.Len(t, api.SecurityDefinitions, 2)
 	assert.Contains(t, api.SecurityDefinitions, "basic")
 	assert.Contains(t, api.SecurityDefinitions, "apikey")
-	assert.Equal(t, "header", api.SecurityDefinitions["apikey"].In)
+	assert.Equal(t, "header", api.SecurityDefinitions["apikey"].(swagger.SecurityScheme).In)
+}
+
+func TestGoogleSecurityScheme(t *testing.T) {
+	api := swag.New(
+		swag.GoogleSecurityScheme("google-oauth", swagger.GoogleEndpointsSecurity("issuer", "jwks", "aud")),
+	)
+	assert.Len(t, api.SecurityDefinitions, 1)
+	assert.Contains(t, api.SecurityDefinitions, "google-oauth")
+	_, ok := api.SecurityDefinitions["google-oauth"].(swagger.GoogleSecurityScheme)
+	assert.True(t, ok)
+}
+
+type customSecurityScheme struct {
+	swagger.SecurityScheme
+	Foo string `json:"x-custom-foo"`
+	Bar string `json:"x-custom-bar"`
+}
+
+func TestCustomSecurityScheme(t *testing.T) {
+	custom := customSecurityScheme{Foo: "foo", Bar: "bar"}
+	api := swag.New(
+		swag.SecurityDefinition("google-oauth", custom),
+	)
+	assert.Len(t, api.SecurityDefinitions, 1)
+	assert.Contains(t, api.SecurityDefinitions, "google-oauth")
+	_, ok := api.SecurityDefinitions["google-oauth"].(customSecurityScheme)
+	assert.True(t, ok)
 }
 
 func TestSecurity(t *testing.T) {

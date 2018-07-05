@@ -138,15 +138,31 @@ func Endpoints(endpoints ...*swagger.Endpoint) Option {
 
 // SecurityScheme creates a new security definition for the API.
 func SecurityScheme(name string, options ...swagger.SecuritySchemeOption) Option {
+	scheme := swagger.SecurityScheme{}
+
+	for _, opt := range options {
+		opt(&scheme)
+	}
+
+	return SecurityDefinition(name, scheme)
+}
+
+// GoogleSecurityScheme creates a new security definition for the API.
+func GoogleSecurityScheme(name string, options ...swagger.GoogleSecuritySchemeOption) Option {
+	scheme := swagger.GoogleSecurityScheme{}
+
+	for _, opt := range options {
+		opt(&scheme)
+	}
+
+	return SecurityDefinition(name, scheme)
+}
+
+// SecurityDefinition creates a new security definition from a given security scheme for the API.
+func SecurityDefinition(name string, scheme interface{}) Option {
 	return func(builder *Builder) {
 		if builder.API.SecurityDefinitions == nil {
-			builder.API.SecurityDefinitions = map[string]swagger.SecurityScheme{}
-		}
-
-		scheme := swagger.SecurityScheme{}
-
-		for _, opt := range options {
-			opt(&scheme)
+			builder.API.SecurityDefinitions = make(map[string]interface{})
 		}
 
 		builder.API.SecurityDefinitions[name] = scheme

@@ -83,8 +83,20 @@ type SecurityScheme struct {
 	Scopes           map[string]string `json:"scopes,omitempty"`
 }
 
+// GoogleSecurityScheme represents a security scheme from the swagger definition for Google OAuth2
+type GoogleSecurityScheme struct {
+	SecurityScheme
+	Issuer    string `json:"x-google-issuer,omitempty"`
+	JwksURI   string `json:"x-google-jwks_uri,omitempty"`
+	Audiences string `json:"x-google-audiences,omitempty"`
+}
+
 // SecuritySchemeOption provides additional customizations to the SecurityScheme.
 type SecuritySchemeOption func(securityScheme *SecurityScheme)
+
+// GoogleSecuritySchemeOption provides additional customizations to the GoogleSecurityScheme. See
+// https://cloud.google.com/endpoints/docs/openapi/openapi-extensions for more details.
+type GoogleSecuritySchemeOption func(securityScheme *GoogleSecurityScheme)
 
 // SecuritySchemeDescription sets the security scheme's description.
 func SecuritySchemeDescription(description string) SecuritySchemeOption {
@@ -136,6 +148,38 @@ func OAuth2Security(flow, authorizationURL, tokenURL string) SecuritySchemeOptio
 		if securityScheme.Scopes == nil {
 			securityScheme.Scopes = map[string]string{}
 		}
+	}
+}
+
+// GoogleOAuth2Security defines a security scheme for Google OAuth2 authentication. See
+// https://cloud.google.com/endpoints/docs/openapi/openapi-extensions for more details.
+func GoogleOAuth2Security(flow, authorizationURL, tokenURL, issuer, jwksURI, audiences string) GoogleSecuritySchemeOption {
+	return func(securityScheme *GoogleSecurityScheme) {
+		securityScheme.Type = "oauth2"
+		securityScheme.Flow = flow
+		securityScheme.AuthorizationURL = authorizationURL
+		securityScheme.TokenURL = tokenURL
+		if securityScheme.Scopes == nil {
+			securityScheme.Scopes = map[string]string{}
+		}
+		securityScheme.Issuer = issuer
+		securityScheme.JwksURI = jwksURI
+		securityScheme.Audiences = audiences
+	}
+}
+
+// GoogleEndpointsSecurity defines a security scheme for Google OAuth2 authentication. See
+// https://cloud.google.com/endpoints/docs/openapi/openapi-extensions for more details.
+func GoogleEndpointsSecurity(issuer, jwksURI, audiences string) GoogleSecuritySchemeOption {
+	return func(securityScheme *GoogleSecurityScheme) {
+		securityScheme.Type = "oauth2"
+		securityScheme.Flow = "implicit"
+		if securityScheme.Scopes == nil {
+			securityScheme.Scopes = map[string]string{}
+		}
+		securityScheme.Issuer = issuer
+		securityScheme.JwksURI = jwksURI
+		securityScheme.Audiences = audiences
 	}
 }
 
@@ -228,16 +272,16 @@ func (e *Endpoints) Walk(fn func(endpoint *Endpoint)) {
 
 // API provides the top level encapsulation for the swagger definition
 type API struct {
-	Swagger             string                    `json:"swagger,omitempty"`
-	Info                Info                      `json:"info"`
-	BasePath            string                    `json:"basePath,omitempty"`
-	Schemes             []string                  `json:"schemes,omitempty"`
-	Paths               map[string]*Endpoints     `json:"paths,omitempty"`
-	Definitions         map[string]Object         `json:"definitions,omitempty"`
-	Tags                []Tag                     `json:"tags,omitempty"`
-	Host                string                    `json:"host,omitempty"`
-	SecurityDefinitions map[string]SecurityScheme `json:"securityDefinitions,omitempty"`
-	Security            *SecurityRequirement      `json:"security,omitempty"`
+	Swagger             string                 `json:"swagger,omitempty"`
+	Info                Info                   `json:"info"`
+	BasePath            string                 `json:"basePath,omitempty"`
+	Schemes             []string               `json:"schemes,omitempty"`
+	Paths               map[string]*Endpoints  `json:"paths,omitempty"`
+	Definitions         map[string]Object      `json:"definitions,omitempty"`
+	Tags                []Tag                  `json:"tags,omitempty"`
+	Host                string                 `json:"host,omitempty"`
+	SecurityDefinitions map[string]interface{} `json:"securityDefinitions,omitempty"`
+	Security            *SecurityRequirement   `json:"security,omitempty"`
 }
 
 func (a *API) clone() *API {
