@@ -174,6 +174,7 @@ func GoogleEndpointsSecurity(issuer, jwksURI, audiences string) GoogleSecuritySc
 	return func(securityScheme *GoogleSecurityScheme) {
 		securityScheme.Type = "oauth2"
 		securityScheme.Flow = "implicit"
+		securityScheme.AuthorizationURL = "https://accounts.google.com/o/oauth2/v2/auth"
 		if securityScheme.Scopes == nil {
 			securityScheme.Scopes = map[string]string{}
 		}
