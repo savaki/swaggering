@@ -199,7 +199,7 @@ func TestSecurityScheme(t *testing.T) {
 	assert.Len(t, api.SecurityDefinitions, 2)
 	assert.Contains(t, api.SecurityDefinitions, "basic")
 	assert.Contains(t, api.SecurityDefinitions, "apikey")
-	assert.Equal(t, "header", api.SecurityDefinitions["apikey"].In)
+	assert.Equal(t, "header", api.SecurityDefinitions["apikey"].(swagger.SecurityScheme).In)
 }
 
 func TestSecurity(t *testing.T) {

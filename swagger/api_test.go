@@ -138,3 +138,43 @@ func TestOAuth2Scope(t *testing.T) {
 	assert.Equal(t, "read data", scheme.Scopes["read"])
 	assert.Equal(t, "write data", scheme.Scopes["write"])
 }
+
+func TestGoogleOAuth2Security(t *testing.T) {
+	issuer := "https://accounts.google.com"
+	jwksURI := "https://www.googleapis.com/oauth2/v1/certs"
+	audiences := "848149964201.apps.googleusercontent.com,841077041629.apps.googleusercontent.com"
+
+	scheme := &swagger.GoogleSecurityScheme{}
+
+	flow := "accessCode"
+	authURL := "http://example.com/oauth/authorize"
+	tokenURL := "http://example.com/oauth/token"
+	swagger.GoogleOAuth2Security(flow, authURL, tokenURL, issuer, jwksURI, audiences)(scheme)
+
+	assert.Equal(t, scheme.Type, "oauth2")
+	assert.Equal(t, scheme.Flow, "accessCode")
+	assert.Equal(t, scheme.AuthorizationURL, authURL)
+	assert.Equal(t, scheme.TokenURL, tokenURL)
+
+	assert.Equal(t, scheme.Issuer, issuer)
+	assert.Equal(t, scheme.JwksURI, jwksURI)
+	assert.Equal(t, scheme.Audiences, audiences)
+}
+
+func TestGoogleOAuth2(t *testing.T) {
+	issuer := "https://accounts.google.com"
+	jwksURI := "https://www.googleapis.com/oauth2/v1/certs"
+	audiences := "848149964201.apps.googleusercontent.com,841077041629.apps.googleusercontent.com"
+
+	scheme := &swagger.GoogleSecurityScheme{}
+	swagger.GoogleEndpointsSecurity(issuer, jwksURI, audiences)(scheme)
+
+	assert.Equal(t, scheme.Type, "oauth2")
+	assert.Equal(t, scheme.Flow, "implicit")
+	assert.Equal(t, scheme.AuthorizationURL, "")
+	assert.Equal(t, scheme.TokenURL, "")
+
+	assert.Equal(t, scheme.Issuer, issuer)
+	assert.Equal(t, scheme.JwksURI, jwksURI)
+	assert.Equal(t, scheme.Audiences, audiences)
+}
