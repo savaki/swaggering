@@ -19,7 +19,7 @@ import (
 	"strings"
 )
 
-func inspect(t reflect.Type, jsonTag string) Property {
+func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 	if p, ok := customTypes[t]; ok {
 		return p
 	}
@@ -62,13 +62,17 @@ func inspect(t reflect.Type, jsonTag string) Property {
 
 	case reflect.String:
 		p.Type = "string"
+		if formatTag != "" {
+			format := strings.Split(formatTag, ",")[0]
+			p.Format = strings.TrimSpace(format)
+		}
 
 	case reflect.Struct:
 		name := makeName(p.GoType)
 		p.Ref = makeRef(name)
 
 	case reflect.Ptr:
-		p := inspect(t.Elem(), jsonTag)
+		p := inspect(t.Elem(), jsonTag, formatTag)
 		p.Nullable = true
 		return p
 
@@ -142,7 +146,7 @@ func defineObject(v interface{}) Object {
 	}
 
 	if t.Kind() != reflect.Struct {
-		p := inspect(t, "")
+		p := inspect(t, "", "")
 		return Object{
 			IsArray:  isArray,
 			GoType:   t,
@@ -200,7 +204,7 @@ func defineObject(v interface{}) Object {
 			}
 		}
 
-		p := inspect(field.Type, field.Tag.Get("json"))
+		p := inspect(field.Type, field.Tag.Get("json"), field.Tag.Get("format"))
 		properties[name] = p
 	}
 
