@@ -118,6 +118,10 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 
 		case reflect.String:
 			p.Items.Type = "string"
+			if formatTag != "" {
+				format := strings.Split(formatTag, ",")[0]
+				p.Items.Format = strings.TrimSpace(format)
+			}
 		}
 	}
 
