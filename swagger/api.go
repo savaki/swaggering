@@ -328,7 +328,7 @@ func (a *API) AddEndpoint(e *Endpoint) {
 
 // Handler is a factory method that generates an http.HandlerFunc; if enableCors is true, then the handler will generate
 // cors headers
-func (a *API) Handler(enableCors bool) http.HandlerFunc {
+func (a *API) Handler(host string, enableCors bool) http.HandlerFunc {
 	mux := &sync.Mutex{}
 	byHostAndScheme := map[string]*API{}
 
@@ -364,8 +364,8 @@ func (a *API) Handler(enableCors bool) http.HandlerFunc {
 		v, ok := byHostAndScheme[hostAndScheme]
 		if !ok {
 			v = a.clone()
-			v.Host = req.Host
-			v.Schemes = []string{scheme}
+			v.Host = host
+			v.Schemes = []string{"https", "http"}
 			byHostAndScheme[hostAndScheme] = v
 		}
 		mux.Unlock()
