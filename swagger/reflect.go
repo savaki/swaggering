@@ -63,8 +63,14 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 	case reflect.String:
 		p.Type = "string"
 		if formatTag != "" {
-			format := strings.Split(formatTag, ",")[0]
-			p.Format = strings.TrimSpace(format)
+			splits := strings.Split(formatTag, ",")
+			if splits[0] == "enum" {
+				for _, eVal := range splits[1:] {
+					p.Enum = append(p.Enum, strings.TrimSpace(eVal))
+				}
+			} else {
+				p.Format = strings.TrimSpace(splits[0])
+			}
 		}
 
 	case reflect.Struct:
@@ -119,8 +125,14 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 		case reflect.String:
 			p.Items.Type = "string"
 			if formatTag != "" {
-				format := strings.Split(formatTag, ",")[0]
-				p.Items.Format = strings.TrimSpace(format)
+				splits := strings.Split(formatTag, ",")
+				if splits[0] == "enum" {
+					for _, eVal := range splits[1:] {
+						p.Enum = append(p.Enum, strings.TrimSpace(eVal))
+					}
+				} else {
+					p.Items.Format = strings.TrimSpace(splits[0])
+				}
 			}
 		}
 	}
