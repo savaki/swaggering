@@ -101,13 +101,14 @@ func Path(name, typ, description string, required bool) Option {
 
 // Query defines a query parameter for the endpoint; name, typ, description, and required correspond to the matching
 // swagger fields
-func Query(name, typ, description string, required bool) Option {
+func Query(name, typ, description, def string, required bool) Option {
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
 		Type:        typ,
 		Description: description,
 		Required:    required,
+		Default:    def,
 	}
 	return parameter(p)
 }
