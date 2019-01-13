@@ -4,3 +4,5 @@
 /*.ipr
 /*.iws
 
+#ignore vscode files
+/.vscode

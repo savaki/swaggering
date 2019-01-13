@@ -18,9 +18,10 @@ import "encoding/json"
 
 // Items represents items from the swagger doc
 type Items struct {
-	Type   string `json:"type,omitempty"`
-	Format string `json:"format,omitempty"`
-	Ref    string `json:"$ref,omitempty"`
+	Type   string   `json:"type,omitempty"`
+	Format string   `json:"format,omitempty"`
+	Enum   []string `json:"enum,omitempty"`
+	Ref    string   `json:"$ref,omitempty"`
 }
 
 // Schema represents a schema from the swagger doc

@@ -128,7 +128,7 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 				splits := strings.Split(formatTag, ",")
 				if splits[0] == "enum" {
 					for _, eVal := range splits[1:] {
-						p.Enum = append(p.Enum, strings.TrimSpace(eVal))
+						p.Items.Enum = append(p.Items.Enum, strings.TrimSpace(eVal))
 					}
 				} else {
 					p.Items.Format = strings.TrimSpace(splits[0])
