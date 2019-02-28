@@ -15,11 +15,14 @@
 package swagger
 
 import (
+	"fmt"
 	"reflect"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
-func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
+func inspect(t reflect.Type, jsonTag, formatTag, minLenTag, maxLenTag, patternTag string) Property {
 	if p, ok := customTypes[t]; ok {
 		return p
 	}
@@ -73,12 +76,36 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 			}
 		}
 
+		var err error
+		for _, val := range []string{minLenTag, maxLenTag} {
+			if val != "" {
+				if val == minLenTag {
+					p.MinLength, err = strconv.Atoi(minLenTag)
+				} else {
+					p.MaxLength, err = strconv.Atoi(maxLenTag)
+				}
+
+				if err != nil {
+					panic(fmt.Errorf("Failed to convert tag value: %s", err))
+				}
+			}
+		}
+
+		if patternTag != "" {
+			_, err := regexp.Compile(patternTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to compile regexp: %s", err))
+			}
+
+			p.Pattern = patternTag
+		}
+
 	case reflect.Struct:
 		name := makeName(p.GoType)
 		p.Ref = makeRef(name)
 
 	case reflect.Ptr:
-		p := inspect(t.Elem(), jsonTag, formatTag)
+		p := inspect(t.Elem(), jsonTag, formatTag, minLenTag, maxLenTag, patternTag)
 		p.Nullable = true
 		return p
 
@@ -134,6 +161,30 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 					p.Items.Format = strings.TrimSpace(splits[0])
 				}
 			}
+
+			var err error
+			for _, val := range []string{minLenTag, maxLenTag} {
+				if val != "" {
+					if val == minLenTag {
+						p.Items.MinLength, err = strconv.Atoi(minLenTag)
+					} else {
+						p.Items.MaxLength, err = strconv.Atoi(maxLenTag)
+					}
+
+					if err != nil {
+						panic(fmt.Errorf("Failed to convert tag value: %s", err))
+					}
+				}
+			}
+
+			if patternTag != "" {
+				_, err := regexp.Compile(patternTag)
+				if err != nil {
+					panic(fmt.Errorf("Failed to compile regexp: %s", err))
+				}
+
+				p.Items.Pattern = patternTag
+			}
 		}
 	}
 
@@ -162,7 +213,7 @@ func defineObject(v interface{}) Object {
 	}
 
 	if t.Kind() != reflect.Struct {
-		p := inspect(t, "", "")
+		p := inspect(t, "", "", "", "", "")
 		return Object{
 			IsArray:  isArray,
 			GoType:   t,
@@ -220,7 +271,10 @@ func defineObject(v interface{}) Object {
 			}
 		}
 
-		p := inspect(field.Type, field.Tag.Get("json"), field.Tag.Get("format"))
+		p := inspect(field.Type, field.Tag.Get("json"), field.Tag.Get("format"),
+			field.Tag.Get("min_length"), field.Tag.Get("max_length"),
+			field.Tag.Get("pattern"))
+
 		properties[name] = p
 	}
 
