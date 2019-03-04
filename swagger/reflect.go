@@ -22,10 +22,17 @@ import (
 	"strings"
 )
 
-func inspect(t reflect.Type, jsonTag, formatTag, minLenTag, maxLenTag, patternTag string) Property {
+func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	if p, ok := customTypes[t]; ok {
 		return p
 	}
+
+	jsonTag := tag.Get("json")
+	formatTag := tag.Get("format")
+	minLenTag := tag.Get("min_length")
+	maxLenTag := tag.Get("max_length")
+	patternTag := tag.Get("pattern")
+	enumTag := tag.Get("enum")
 
 	if t.Kind() == reflect.Ptr {
 		if p, ok := customTypes[t.Elem()]; ok {
@@ -76,18 +83,25 @@ func inspect(t reflect.Type, jsonTag, formatTag, minLenTag, maxLenTag, patternTa
 			}
 		}
 
-		var err error
-		for _, val := range []string{minLenTag, maxLenTag} {
-			if val != "" {
-				if val == minLenTag {
-					p.MinLength, err = strconv.Atoi(minLenTag)
-				} else {
-					p.MaxLength, err = strconv.Atoi(maxLenTag)
-				}
+		if enumTag != "" {
+			splits := strings.Split(enumTag, ",")
+			for _, eVal := range splits {
+				p.Enum = append(p.Enum, strings.TrimSpace(eVal))
+			}
+		}
 
-				if err != nil {
-					panic(fmt.Errorf("Failed to convert tag value: %s", err))
-				}
+		var err error
+		if minLenTag != "" {
+			p.MinLength, err = strconv.Atoi(minLenTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert min tag value: %s", err))
+			}
+		}
+
+		if maxLenTag != "" {
+			p.MaxLength, err = strconv.Atoi(maxLenTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert max tag value: %s", err))
 			}
 		}
 
@@ -105,7 +119,7 @@ func inspect(t reflect.Type, jsonTag, formatTag, minLenTag, maxLenTag, patternTa
 		p.Ref = makeRef(name)
 
 	case reflect.Ptr:
-		p := inspect(t.Elem(), jsonTag, formatTag, minLenTag, maxLenTag, patternTag)
+		p := inspect(t.Elem(), tag)
 		p.Nullable = true
 		return p
 
@@ -162,18 +176,25 @@ func inspect(t reflect.Type, jsonTag, formatTag, minLenTag, maxLenTag, patternTa
 				}
 			}
 
-			var err error
-			for _, val := range []string{minLenTag, maxLenTag} {
-				if val != "" {
-					if val == minLenTag {
-						p.Items.MinLength, err = strconv.Atoi(minLenTag)
-					} else {
-						p.Items.MaxLength, err = strconv.Atoi(maxLenTag)
-					}
+			if enumTag != "" {
+				splits := strings.Split(enumTag, ",")
+				for _, eVal := range splits {
+					p.Items.Enum = append(p.Enum, strings.TrimSpace(eVal))
+				}
+			}
 
-					if err != nil {
-						panic(fmt.Errorf("Failed to convert tag value: %s", err))
-					}
+			var err error
+			if minLenTag != "" {
+				p.Items.MinLength, err = strconv.Atoi(minLenTag)
+				if err != nil {
+					panic(fmt.Errorf("Failed to convert min tag value: %s", err))
+				}
+			}
+
+			if maxLenTag != "" {
+				p.Items.MaxLength, err = strconv.Atoi(maxLenTag)
+				if err != nil {
+					panic(fmt.Errorf("Failed to convert max tag value: %s", err))
 				}
 			}
 
@@ -213,7 +234,7 @@ func defineObject(v interface{}) Object {
 	}
 
 	if t.Kind() != reflect.Struct {
-		p := inspect(t, "", "", "", "", "")
+		p := inspect(t, "")
 		return Object{
 			IsArray:  isArray,
 			GoType:   t,
@@ -271,9 +292,7 @@ func defineObject(v interface{}) Object {
 			}
 		}
 
-		p := inspect(field.Type, field.Tag.Get("json"), field.Tag.Get("format"),
-			field.Tag.Get("min_length"), field.Tag.Get("max_length"),
-			field.Tag.Get("pattern"))
+		p := inspect(field.Type, field.Tag)
 
 		properties[name] = p
 	}
