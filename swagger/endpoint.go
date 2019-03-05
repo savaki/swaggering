@@ -18,10 +18,13 @@ import "encoding/json"
 
 // Items represents items from the swagger doc
 type Items struct {
-	Type   string   `json:"type,omitempty"`
-	Format string   `json:"format,omitempty"`
-	Enum   []string `json:"enum,omitempty"`
-	Ref    string   `json:"$ref,omitempty"`
+	Type      string   `json:"type,omitempty"`
+	Format    string   `json:"format,omitempty"`
+	Enum      []string `json:"enum,omitempty"`
+	Ref       string   `json:"$ref,omitempty"`
+	MinLength int      `json:"minLength,omitempty"`
+	MaxLength int      `json:"maxLength,omitempty"`
+	Pattern   string   `json:"pattern,omitempty"`
 }
 
 // Schema represents a schema from the swagger doc
@@ -58,6 +61,9 @@ type Parameter struct {
 	Format      string   `json:"format,omitempty"`
 	Enum        []string `json:"enum,omitempty"`
 	Nullable    bool     `json:"x-nullable,omitempty"`
+	Pattern     string   `json:"pattern,omitempty"`
+	MaxLength   int      `json:"maxLength,omitempty"`
+	MinLength   int      `json:"minLength,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc

@@ -48,6 +48,8 @@ type Property struct {
 	Example     string       `json:"example,omitempty"`
 	Items       *Items       `json:"items,omitempty"`
 	Nullable    bool         `json:"x-nullable,omitempty"`
+	MinLength   int          `json:"minLength,omitempty"`
+	MaxLength   int          `json:"maxLength,omitempty"`
 }
 
 // Contact represents the contact entity from the swagger definition; used by Info

@@ -94,6 +94,19 @@ func main() {
 
 `time.Time` is automatically registered as a custom type.
 
+### Supported struct tags
+
+The struct tags defined bellow apply to both **scalar** strings and **arrays**
+| Tag | Description | Example | 
+| ------ | ------ | ------ |
+| format | Specifies the format of the string. **Supported formats:** ```uuid``` | ```format:"uuid"``` |
+| min_length | Specifies the minimum length of the string | ```min_length:"1"```| 
+| max_length | Specifies the maximum lenght of the string | ```max_length:"10"``` |
+| enum | Speicifies possible values of the string | ```enum:"Read,Write,Delete,Update"``` |
+| pattern | Specifies a regural expression template for the string value | ```pattern:"^\w+$"``` |
+
+**_Note:_** Enumeration using a format tag i.e ```format:"enum,Allow,Deny"``` is now **deprecated** and soon will be removed.
+
 ## Complete Example
 
 ```go

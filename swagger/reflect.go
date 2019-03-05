@@ -15,14 +15,24 @@
 package swagger
 
 import (
+	"fmt"
 	"reflect"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
-func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
+func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	if p, ok := customTypes[t]; ok {
 		return p
 	}
+
+	jsonTag := tag.Get("json")
+	formatTag := tag.Get("format")
+	minLenTag := tag.Get("min_length")
+	maxLenTag := tag.Get("max_length")
+	patternTag := tag.Get("pattern")
+	enumTag := tag.Get("enum")
 
 	if t.Kind() == reflect.Ptr {
 		if p, ok := customTypes[t.Elem()]; ok {
@@ -73,12 +83,43 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 			}
 		}
 
+		if enumTag != "" {
+			splits := strings.Split(enumTag, ",")
+			for _, eVal := range splits {
+				p.Enum = append(p.Enum, strings.TrimSpace(eVal))
+			}
+		}
+
+		var err error
+		if minLenTag != "" {
+			p.MinLength, err = strconv.Atoi(minLenTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert min tag value: %s", err))
+			}
+		}
+
+		if maxLenTag != "" {
+			p.MaxLength, err = strconv.Atoi(maxLenTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert max tag value: %s", err))
+			}
+		}
+
+		if patternTag != "" {
+			_, err := regexp.Compile(patternTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to compile regexp: %s", err))
+			}
+
+			p.Pattern = patternTag
+		}
+
 	case reflect.Struct:
 		name := makeName(p.GoType)
 		p.Ref = makeRef(name)
 
 	case reflect.Ptr:
-		p := inspect(t.Elem(), jsonTag, formatTag)
+		p := inspect(t.Elem(), tag)
 		p.Nullable = true
 		return p
 
@@ -134,6 +175,37 @@ func inspect(t reflect.Type, jsonTag string, formatTag string) Property {
 					p.Items.Format = strings.TrimSpace(splits[0])
 				}
 			}
+
+			if enumTag != "" {
+				splits := strings.Split(enumTag, ",")
+				for _, eVal := range splits {
+					p.Items.Enum = append(p.Enum, strings.TrimSpace(eVal))
+				}
+			}
+
+			var err error
+			if minLenTag != "" {
+				p.Items.MinLength, err = strconv.Atoi(minLenTag)
+				if err != nil {
+					panic(fmt.Errorf("Failed to convert min tag value: %s", err))
+				}
+			}
+
+			if maxLenTag != "" {
+				p.Items.MaxLength, err = strconv.Atoi(maxLenTag)
+				if err != nil {
+					panic(fmt.Errorf("Failed to convert max tag value: %s", err))
+				}
+			}
+
+			if patternTag != "" {
+				_, err := regexp.Compile(patternTag)
+				if err != nil {
+					panic(fmt.Errorf("Failed to compile regexp: %s", err))
+				}
+
+				p.Items.Pattern = patternTag
+			}
 		}
 	}
 
@@ -162,7 +234,7 @@ func defineObject(v interface{}) Object {
 	}
 
 	if t.Kind() != reflect.Struct {
-		p := inspect(t, "", "")
+		p := inspect(t, "")
 		return Object{
 			IsArray:  isArray,
 			GoType:   t,
@@ -220,7 +292,8 @@ func defineObject(v interface{}) Object {
 			}
 		}
 
-		p := inspect(field.Type, field.Tag.Get("json"), field.Tag.Get("format"))
+		p := inspect(field.Type, field.Tag)
+
 		properties[name] = p
 	}
 
