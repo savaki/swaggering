@@ -97,6 +97,7 @@ func main() {
 ### Supported struct tags
 
 The struct tags defined bellow apply to both **scalar** strings and **arrays**
+
 | Tag | Description | Example | 
 | ------ | ------ | ------ |
 | format | Specifies the format of the string. **Supported formats:** ```uuid``` | ```format:"uuid"``` |
