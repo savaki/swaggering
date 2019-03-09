@@ -1,3 +1,4 @@
+// Package swagger ...
 // Copyright 2017 Matt Ho
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,11 +85,13 @@ type Endpoint struct {
 	Security *SecurityRequirement `json:"security,omitempty"`
 }
 
+// SecurityRequirement represents a security requirement from the swagger doc
 type SecurityRequirement struct {
 	Requirements    []map[string][]string
 	DisableSecurity bool
 }
 
+// MarshalJSON serializes a SecurityRequirement
 func (s *SecurityRequirement) MarshalJSON() ([]byte, error) {
 	if s.DisableSecurity {
 		return []byte("[]"), nil
