@@ -53,19 +53,20 @@ type Response struct {
 
 // Parameter represents a parameter from the swagger doc
 type Parameter struct {
-	In          string   `json:"in,omitempty"`
-	Name        string   `json:"name,omitempty"`
-	Description string   `json:"description,omitempty"`
-	Required    bool     `json:"required"`
-	Schema      *Schema  `json:"schema,omitempty"`
-	Type        string   `json:"type,omitempty"`
-	Items       *Items   `json:"items,omitempty"`
-	Format      string   `json:"format,omitempty"`
-	Enum        []string `json:"enum,omitempty"`
-	Nullable    bool     `json:"x-nullable,omitempty"`
-	Pattern     string   `json:"pattern,omitempty"`
-	MaxLength   int      `json:"maxLength,omitempty"`
-	MinLength   int      `json:"minLength,omitempty"`
+	In          string      `json:"in,omitempty"`
+	Name        string      `json:"name,omitempty"`
+	Description string      `json:"description,omitempty"`
+	Required    bool        `json:"required"`
+	Schema      *Schema     `json:"schema,omitempty"`
+	Type        string      `json:"type,omitempty"`
+	Items       *Items      `json:"items,omitempty"`
+	Default     interface{} `json:"default,omitempty"`
+	Format      string      `json:"format,omitempty"`
+	Enum        []string    `json:"enum,omitempty"`
+	Nullable    bool        `json:"x-nullable,omitempty"`
+	Pattern     string      `json:"pattern,omitempty"`
+	MaxLength   int         `json:"maxLength,omitempty"`
+	MinLength   int         `json:"minLength,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc
