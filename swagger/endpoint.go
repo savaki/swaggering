@@ -19,13 +19,14 @@ import "encoding/json"
 
 // Items represents items from the swagger doc
 type Items struct {
-	Type      string   `json:"type,omitempty"`
-	Format    string   `json:"format,omitempty"`
-	Enum      []string `json:"enum,omitempty"`
-	Ref       string   `json:"$ref,omitempty"`
-	MinLength int      `json:"minLength,omitempty"`
-	MaxLength int      `json:"maxLength,omitempty"`
-	Pattern   string   `json:"pattern,omitempty"`
+	Type      string      `json:"type,omitempty"`
+	Default   interface{} `json:"default,omitempty"`
+	Format    string      `json:"format,omitempty"`
+	Enum      []string    `json:"enum,omitempty"`
+	Ref       string      `json:"$ref,omitempty"`
+	MinLength int         `json:"minLength,omitempty"`
+	MaxLength int         `json:"maxLength,omitempty"`
+	Pattern   string      `json:"pattern,omitempty"`
 }
 
 // Schema represents a schema from the swagger doc
