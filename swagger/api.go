@@ -40,21 +40,23 @@ type Object struct {
 
 // Property represents the property entity from the swagger definition
 type Property struct {
-	GoType      reflect.Type `json:"-"`
-	Type        string       `json:"type,omitempty"`
-	Description string       `json:"description,omitempty"`
-	Enum        []string     `json:"enum,omitempty"`
-	Default     interface{}  `json:"default,omitempty"`
-	Format      string       `json:"format,omitempty"`
-	Pattern     string       `json:"pattern,omitempty"`
-	Ref         string       `json:"$ref,omitempty"`
-	Example     string       `json:"example,omitempty"`
-	Items       *Items       `json:"items,omitempty"`
-	Nullable    bool         `json:"x-nullable,omitempty"`
-	MinLength   int          `json:"minLength,omitempty"`
-	MaxLength   int          `json:"maxLength,omitempty"`
-	Minimum     *int64       `json:"minimum,omitempty"`
-	Maximum     *int64       `json:"maximum,omitempty"`
+	GoType           reflect.Type `json:"-"`
+	Type             string       `json:"type,omitempty"`
+	Description      string       `json:"description,omitempty"`
+	Enum             []string     `json:"enum,omitempty"`
+	Default          interface{}  `json:"default,omitempty"`
+	Format           string       `json:"format,omitempty"`
+	Pattern          string       `json:"pattern,omitempty"`
+	Ref              string       `json:"$ref,omitempty"`
+	Example          string       `json:"example,omitempty"`
+	Items            *Items       `json:"items,omitempty"`
+	Nullable         bool         `json:"x-nullable,omitempty"`
+	MinLength        int          `json:"minLength,omitempty"`
+	MaxLength        int          `json:"maxLength,omitempty"`
+	Minimum          *int64       `json:"minimum,omitempty"`
+	Maximum          *int64       `json:"maximum,omitempty"`
+	ExclusiveMinimum bool         `json:"exclusiveMinimum,omitempty"`
+	ExclusiveMaximum bool         `json:"exclusiveMaximum,omitempty"`
 }
 
 // Contact represents the contact entity from the swagger definition; used by Info

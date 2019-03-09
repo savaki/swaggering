@@ -19,16 +19,18 @@ import "encoding/json"
 
 // Items represents items from the swagger doc
 type Items struct {
-	Type      string      `json:"type,omitempty"`
-	Default   interface{} `json:"default,omitempty"`
-	Format    string      `json:"format,omitempty"`
-	Enum      []string    `json:"enum,omitempty"`
-	Ref       string      `json:"$ref,omitempty"`
-	MinLength int         `json:"minLength,omitempty"`
-	MaxLength int         `json:"maxLength,omitempty"`
-	Minimum   *int64      `json:"minimum,omitempty"`
-	Maximum   *int64      `json:"maximum,omitempty"`
-	Pattern   string      `json:"pattern,omitempty"`
+	Type             string      `json:"type,omitempty"`
+	Default          interface{} `json:"default,omitempty"`
+	Format           string      `json:"format,omitempty"`
+	Enum             []string    `json:"enum,omitempty"`
+	Ref              string      `json:"$ref,omitempty"`
+	MinLength        int         `json:"minLength,omitempty"`
+	MaxLength        int         `json:"maxLength,omitempty"`
+	Minimum          *int64      `json:"minimum,omitempty"`
+	Maximum          *int64      `json:"maximum,omitempty"`
+	ExclusiveMinimum bool        `json:"exclusiveMinimum,omitempty"`
+	ExclusiveMaximum bool        `json:"exclusiveMaximum,omitempty"`
+	Pattern          string      `json:"pattern,omitempty"`
 }
 
 // Schema represents a schema from the swagger doc
@@ -55,22 +57,24 @@ type Response struct {
 
 // Parameter represents a parameter from the swagger doc
 type Parameter struct {
-	In          string      `json:"in,omitempty"`
-	Name        string      `json:"name,omitempty"`
-	Description string      `json:"description,omitempty"`
-	Required    bool        `json:"required"`
-	Schema      *Schema     `json:"schema,omitempty"`
-	Type        string      `json:"type,omitempty"`
-	Items       *Items      `json:"items,omitempty"`
-	Default     interface{} `json:"default,omitempty"`
-	Format      string      `json:"format,omitempty"`
-	Enum        []string    `json:"enum,omitempty"`
-	Nullable    bool        `json:"x-nullable,omitempty"`
-	Pattern     string      `json:"pattern,omitempty"`
-	MaxLength   int         `json:"maxLength,omitempty"`
-	MinLength   int         `json:"minLength,omitempty"`
-	Minimum     *int64      `json:"minimum,omitempty"`
-	Maximum     *int64      `json:"maximum,omitempty"`
+	In               string      `json:"in,omitempty"`
+	Name             string      `json:"name,omitempty"`
+	Description      string      `json:"description,omitempty"`
+	Required         bool        `json:"required"`
+	Schema           *Schema     `json:"schema,omitempty"`
+	Type             string      `json:"type,omitempty"`
+	Items            *Items      `json:"items,omitempty"`
+	Default          interface{} `json:"default,omitempty"`
+	Format           string      `json:"format,omitempty"`
+	Enum             []string    `json:"enum,omitempty"`
+	Nullable         bool        `json:"x-nullable,omitempty"`
+	Pattern          string      `json:"pattern,omitempty"`
+	MaxLength        int         `json:"maxLength,omitempty"`
+	MinLength        int         `json:"minLength,omitempty"`
+	Minimum          *int64      `json:"minimum,omitempty"`
+	Maximum          *int64      `json:"maximum,omitempty"`
+	ExclusiveMinimum bool        `json:"exclusiveMinimum,omitempty"`
+	ExclusiveMaximum bool        `json:"exclusiveMaximum,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc

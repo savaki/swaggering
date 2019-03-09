@@ -34,6 +34,8 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	minLenTag := tag.Get("min_length")
 	maxLenTag := tag.Get("max_length")
 	minimumTag := tag.Get("minimum")
+	exclusiveMinimumTag := tag.Get("exclusive_minimum")
+	exclusiveMaximumTag := tag.Get("exclusive_maximum")
 	maximumTag := tag.Get("maximum")
 	patternTag := tag.Get("pattern")
 	enumTag := tag.Get("enum")
@@ -81,6 +83,18 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 			}
 			p.Maximum = &max
 		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
 
 	case reflect.Uint8, reflect.Uint16, reflect.Uint32:
 		p.Type = "integer"
@@ -106,6 +120,18 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
 			}
 			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
 		}
 
 	case reflect.Int64:
@@ -133,6 +159,18 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 			}
 			p.Maximum = &max
 		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
 
 	case reflect.Uint64:
 		p.Type = "integer"
@@ -158,6 +196,18 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
 			}
 			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
 		}
 
 	case reflect.Float64:
@@ -185,6 +235,18 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 			}
 			p.Maximum = &max
 		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
 
 	case reflect.Float32:
 		p.Type = "number"
@@ -210,6 +272,18 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
 			}
 			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
 		}
 
 	case reflect.Bool:
