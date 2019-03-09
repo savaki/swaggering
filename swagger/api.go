@@ -53,6 +53,8 @@ type Property struct {
 	Nullable             bool         `json:"x-nullable,omitempty"`
 	MinLength            int          `json:"minLength,omitempty"`
 	MaxLength            int          `json:"maxLength,omitempty"`
+	Minimum              *int64       `json:"minimum,omitempty"`
+	Maximum              *int64       `json:"maximum,omitempty"`
 	AdditionalProperties *Property    `json:"additionalProperties"`
 }
 

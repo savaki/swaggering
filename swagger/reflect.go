@@ -33,6 +33,8 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	formatTag := tag.Get("format")
 	minLenTag := tag.Get("min_length")
 	maxLenTag := tag.Get("max_length")
+	minimumTag := tag.Get("minimum")
+	maximumTag := tag.Get("maximum")
 	patternTag := tag.Get("pattern")
 	enumTag := tag.Get("enum")
 
@@ -63,6 +65,23 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
 			}
 		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+
 	case reflect.Uint8, reflect.Uint16, reflect.Uint32:
 		p.Type = "integer"
 		p.Format = "int32"
@@ -71,6 +90,22 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 			if err != nil {
 				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
 			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
 		}
 
 	case reflect.Int64:
@@ -82,6 +117,23 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
 			}
 		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+
 	case reflect.Uint64:
 		p.Type = "integer"
 		p.Format = "int64"
@@ -90,6 +142,22 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 			if err != nil {
 				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
 			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
 		}
 
 	case reflect.Float64:
@@ -101,6 +169,22 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
 			}
 		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
 
 	case reflect.Float32:
 		p.Type = "number"
@@ -110,6 +194,22 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 			if err != nil {
 				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
 			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
 		}
 
 	case reflect.Bool:

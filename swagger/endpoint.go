@@ -26,6 +26,8 @@ type Items struct {
 	Ref       string      `json:"$ref,omitempty"`
 	MinLength int         `json:"minLength,omitempty"`
 	MaxLength int         `json:"maxLength,omitempty"`
+	Minimum   *int64      `json:"minimum,omitempty"`
+	Maximum   *int64      `json:"maximum,omitempty"`
 	Pattern   string      `json:"pattern,omitempty"`
 }
 
@@ -67,6 +69,8 @@ type Parameter struct {
 	Pattern     string      `json:"pattern,omitempty"`
 	MaxLength   int         `json:"maxLength,omitempty"`
 	MinLength   int         `json:"minLength,omitempty"`
+	Minimum     *int64      `json:"minimum,omitempty"`
+	Maximum     *int64      `json:"maximum,omitempty"`
 }
 
 // Endpoint represents an endpoint from the swagger doc
