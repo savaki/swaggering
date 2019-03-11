@@ -1,3 +1,4 @@
+// Package swagger ...
 // Copyright 2017 Matt Ho
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,9 +29,14 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	}
 
 	jsonTag := tag.Get("json")
+	defaultTag := tag.Get("default")
 	formatTag := tag.Get("format")
 	minLenTag := tag.Get("min_length")
 	maxLenTag := tag.Get("max_length")
+	minimumTag := tag.Get("minimum")
+	exclusiveMinimumTag := tag.Get("exclusive_minimum")
+	exclusiveMaximumTag := tag.Get("exclusive_maximum")
+	maximumTag := tag.Get("maximum")
 	patternTag := tag.Get("pattern")
 	enumTag := tag.Get("enum")
 
@@ -50,28 +56,250 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 		return p
 	}
 
+	var err error
 	switch p.GoType.Kind() {
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Uint8, reflect.Uint16, reflect.Uint32:
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32:
 		p.Type = "integer"
 		p.Format = "int32"
+		if defaultTag != "" {
+			p.Default, err = strconv.ParseInt(defaultTag, 10, 32)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
+			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
 
-	case reflect.Int64, reflect.Uint64:
+	case reflect.Uint8, reflect.Uint16, reflect.Uint32:
+		p.Type = "integer"
+		p.Format = "int32"
+		if defaultTag != "" {
+			p.Default, err = strconv.ParseUint(defaultTag, 10, 32)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
+			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
+
+	case reflect.Int64:
 		p.Type = "integer"
 		p.Format = "int64"
+		if defaultTag != "" {
+			p.Default, err = strconv.ParseInt(defaultTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
+			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
+
+	case reflect.Uint64:
+		p.Type = "integer"
+		p.Format = "int64"
+		if defaultTag != "" {
+			p.Default, err = strconv.ParseUint(defaultTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
+			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
 
 	case reflect.Float64:
 		p.Type = "number"
 		p.Format = "double"
+		if defaultTag != "" {
+			p.Default, err = strconv.ParseFloat(defaultTag, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
+			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
 
 	case reflect.Float32:
 		p.Type = "number"
 		p.Format = "float"
+		if defaultTag != "" {
+			p.Default, err = strconv.ParseFloat(defaultTag, 32)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
+			}
+		}
+		if minimumTag != "" {
+			var min int64
+			min, err = strconv.ParseInt(minimumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert minimum tag value: %s", err))
+			}
+			p.Minimum = &min
+		}
+		if maximumTag != "" {
+			var max int64
+			max, err = strconv.ParseInt(maximumTag, 10, 64)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert maximum tag value: %s", err))
+			}
+			p.Maximum = &max
+		}
+		if exclusiveMinimumTag != "" {
+			p.ExclusiveMinimum, err = strconv.ParseBool(exclusiveMinimumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_minimum tag value: %s", err))
+			}
+		}
+		if exclusiveMaximumTag != "" {
+			p.ExclusiveMaximum, err = strconv.ParseBool(exclusiveMaximumTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert exclusive_maximum tag value: %s", err))
+			}
+		}
 
 	case reflect.Bool:
 		p.Type = "boolean"
+		if defaultTag != "" {
+			p.Default, err = strconv.ParseBool(defaultTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert default tag value: %s", err))
+			}
+		}
 
 	case reflect.String:
 		p.Type = "string"
+		if defaultTag != "" {
+			p.Default = defaultTag
+		}
 		if formatTag != "" {
 			splits := strings.Split(formatTag, ",")
 			if splits[0] == "enum" {
@@ -90,7 +318,6 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 			}
 		}
 
-		var err error
 		if minLenTag != "" {
 			p.MinLength, err = strconv.Atoi(minLenTag)
 			if err != nil {
@@ -183,7 +410,6 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 				}
 			}
 
-			var err error
 			if minLenTag != "" {
 				p.Items.MinLength, err = strconv.Atoi(minLenTag)
 				if err != nil {
