@@ -352,6 +352,8 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 
 	case reflect.Map:
 		p.Type = "object"
+		ap := inspect(t.Elem(), tag)
+		p.AdditionalProperties = &ap
 
 	case reflect.Slice:
 		// For json.RawMessage
@@ -554,6 +556,24 @@ func define(v interface{}) map[string]Object {
 						child := defineObject(p.GoType)
 						objMap[child.Name] = child
 						dirty = true
+					}
+				}
+				if p.AdditionalProperties != nil {
+					var t reflect.Type
+					switch value := p.AdditionalProperties.(type) {
+					case reflect.Type:
+						t = value
+					default:
+						t = reflect.TypeOf(p.AdditionalProperties)
+					}
+					if t.Kind() == reflect.Ptr {
+						ap := p.AdditionalProperties.(*Property)
+						name := makeName(ap.GoType)
+						if _, exists := objMap[name]; !exists {
+							child := defineObject(ap.GoType)
+							objMap[child.Name] = child
+							dirty = true
+						}
 					}
 				}
 			}
