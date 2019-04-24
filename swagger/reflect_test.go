@@ -39,6 +39,8 @@ type Pet struct {
 	String      string
 	StringArray []string
 
+	Skip string `swagger:"-"`
+
 	unexported string
 }
 
