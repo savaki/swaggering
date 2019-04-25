@@ -353,7 +353,13 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	case reflect.Map:
 		p.Type = "object"
 		ap := inspect(t.Elem(), tag)
-		p.AdditionalProperties = &ap
+		// map[string]interface{} is just an object, no need for additionalProperties
+		if ap.GoType.Kind() != reflect.Interface {
+			p.AdditionalProperties = &ap
+		}
+
+	case reflect.Interface:
+		p.Type = "object"
 
 	case reflect.Slice:
 		// For json.RawMessage
