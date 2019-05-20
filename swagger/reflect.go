@@ -487,48 +487,56 @@ func defineObject(v interface{}) Object {
 			continue
 		}
 
-		// determine the json name of the field
-		name := strings.TrimSpace(field.Tag.Get("json"))
-		if name == "" || strings.HasPrefix(name, ",") {
-			name = field.Name
-
-		} else {
-			// strip out things like , omitempty
-			parts := strings.Split(name, ",")
-			name = parts[0]
-		}
-
-		parts := strings.Split(name, ",") // foo,omitempty => foo
-		name = parts[0]
-		if name == "-" {
-			// honor json ignore tag
-			continue
-		}
-
-		// determine if this field is required or not
-		if v := field.Tag.Get("required"); v == "true" {
-			if required == nil {
-				required = []string{}
+		// If anoynmous - embed it
+		if field.Anonymous == true {
+			obj := defineObject(reflect.New(field.Type).Interface())
+			for k, v := range obj.Properties {
+				properties[k] = v
 			}
-			required = append(required, name)
-		}
+		} else {
+			// determine the json name of the field
+			name := strings.TrimSpace(field.Tag.Get("json"))
+			if name == "" || strings.HasPrefix(name, ",") {
+				name = field.Name
 
-		// support go-playground/validator binding tags
-		if v := field.Tag.Get("binding"); v != "" {
-			parts := strings.Split(v, ",") // "gt=0,dive,len=1,dive,required"
-			for _, a := range parts {
-				if a == "required" {
-					if required == nil {
-						required = []string{}
+			} else {
+				// strip out things like , omitempty
+				parts := strings.Split(name, ",")
+				name = parts[0]
+			}
+
+			parts := strings.Split(name, ",") // foo,omitempty => foo
+			name = parts[0]
+			if name == "-" {
+				// honor json ignore tag
+				continue
+			}
+
+			// determine if this field is required or not
+			if v := field.Tag.Get("required"); v == "true" {
+				if required == nil {
+					required = []string{}
+				}
+				required = append(required, name)
+			}
+
+			// support go-playground/validator binding tags
+			if v := field.Tag.Get("binding"); v != "" {
+				parts := strings.Split(v, ",") // "gt=0,dive,len=1,dive,required"
+				for _, a := range parts {
+					if a == "required" {
+						if required == nil {
+							required = []string{}
+						}
+						required = append(required, name)
 					}
-					required = append(required, name)
 				}
 			}
+
+			p := inspect(field.Type, field.Tag)
+
+			properties[name] = p
 		}
-
-		p := inspect(field.Type, field.Tag)
-
-		properties[name] = p
 	}
 
 	return Object{
