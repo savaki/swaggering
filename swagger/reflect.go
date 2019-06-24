@@ -31,6 +31,9 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	jsonTag := tag.Get("json")
 	defaultTag := tag.Get("default")
 	formatTag := tag.Get("format")
+	minItemsTag := tag.Get("min_items")
+	maxItemsTag := tag.Get("max_items")
+	uniqueItemsTag := tag.Get("unique_items")
 	minLenTag := tag.Get("min_length")
 	maxLenTag := tag.Get("max_length")
 	minimumTag := tag.Get("minimum")
@@ -366,6 +369,26 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 		if p.GoType.PkgPath() == "encoding/json" && p.GoType.Name() == "RawMessage" {
 			p.Type = "object"
 			return p
+		}
+
+		if minItemsTag != "" {
+			p.MinItems, err = strconv.Atoi(minItemsTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert min_items tag value: %s", err))
+			}
+		}
+
+		if maxItemsTag != "" {
+			p.MaxItems, err = strconv.Atoi(maxItemsTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert max_items tag value: %s", err))
+			}
+		}
+		if uniqueItemsTag != "" {
+			p.UniqueItems, err = strconv.ParseBool(uniqueItemsTag)
+			if err != nil {
+				panic(fmt.Errorf("Failed to convert unique_items tag value: %s", err))
+			}
 		}
 
 		p.Type = "array"

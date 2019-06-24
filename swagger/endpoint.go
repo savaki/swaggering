@@ -24,6 +24,9 @@ type Items struct {
 	Format               string      `json:"format,omitempty"`
 	Enum                 []string    `json:"enum,omitempty"`
 	Ref                  string      `json:"$ref,omitempty"`
+	MinItems             int         `json:"minItems,omitempty"`
+	MaxItems             int         `json:"maxItems,omitempty"`
+	UniqueItems          bool        `json:"uniqueItems,omitempty"`
 	MinLength            int         `json:"minLength,omitempty"`
 	MaxLength            int         `json:"maxLength,omitempty"`
 	Minimum              *int64      `json:"minimum,omitempty"`
@@ -70,6 +73,9 @@ type Parameter struct {
 	Enum                 []string    `json:"enum,omitempty"`
 	Nullable             bool        `json:"x-nullable,omitempty"`
 	Pattern              string      `json:"pattern,omitempty"`
+	MinItems             int         `json:"minItems,omitempty"`
+	MaxItems             int         `json:"maxItems,omitempty"`
+	UniqueItems          bool        `json:"uniqueItems,omitempty"`
 	MaxLength            int         `json:"maxLength,omitempty"`
 	MinLength            int         `json:"minLength,omitempty"`
 	Minimum              *int64      `json:"minimum,omitempty"`

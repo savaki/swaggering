@@ -51,6 +51,9 @@ type Property struct {
 	Example              string       `json:"example,omitempty"`
 	Items                *Items       `json:"items,omitempty"`
 	Nullable             bool         `json:"x-nullable,omitempty"`
+	MinItems             int          `json:"minItems,omitempty"`
+	MaxItems             int          `json:"maxItems,omitempty"`
+	UniqueItems          bool         `json:"uniqueItems,omitempty"`
 	MinLength            int          `json:"minLength,omitempty"`
 	MaxLength            int          `json:"maxLength,omitempty"`
 	Minimum              *int64       `json:"minimum,omitempty"`
