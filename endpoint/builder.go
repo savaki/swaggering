@@ -141,6 +141,19 @@ func PathMap(params map[string]swagger.Parameter) Option {
 	}
 }
 
+// RequestHeader defines a header parameter for the endpoint; name, typ, format, description, and required correspond to the matching
+func RequestHeader(name, typ, format, description string, required bool) Option {
+	p := swagger.Parameter{
+		Name:        name,
+		In:          "header",
+		Type:        typ,
+		Format:      format,
+		Description: description,
+		Required:    required,
+	}
+	return parameter(p)
+}
+
 // Query defines a query parameter for the endpoint; name, typ, format, description, and required correspond to the matching
 // swagger fields
 func Query(name, typ, format, description string, required bool) Option {
