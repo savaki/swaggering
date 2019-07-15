@@ -30,6 +30,7 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 
 	jsonTag := tag.Get("json")
 	defaultTag := tag.Get("default")
+	exampleTag := tag.Get("example")
 	formatTag := tag.Get("format")
 	minItemsTag := tag.Get("min_items")
 	maxItemsTag := tag.Get("max_items")
@@ -57,6 +58,10 @@ func inspect(t reflect.Type, tag reflect.StructTag) Property {
 	if strings.Contains(jsonTag, ",string") {
 		p.Type = "string"
 		return p
+	}
+
+	if exampleTag != "" {
+		p.Example = exampleTag
 	}
 
 	var err error
