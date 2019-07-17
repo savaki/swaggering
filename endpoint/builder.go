@@ -305,6 +305,11 @@ func HeaderMap(headers map[string]swagger.Header) ResponseOption {
 	}
 }
 
+type fileMarker struct{}
+
+// ResponseFile can be used in an endpoint to change the type to 'file'
+var ResponseFile fileMarker
+
 // ResponseType sets the endpoint response for the specified code; may be used multiple times with different status codes
 // t represents the Type of the response
 func ResponseType(code int, t reflect.Type, description string, opts ...ResponseOption) Option {
@@ -316,7 +321,13 @@ func ResponseType(code int, t reflect.Type, description string, opts ...Response
 		r := swagger.Response{
 			Description: description,
 		}
-		if t.Kind() != reflect.String {
+
+		if t.Kind() == reflect.Struct && t == reflect.TypeOf(fileMarker{}) {
+			r.Schema = &swagger.Schema{
+				Type:      "file",
+				Prototype: "",
+			}
+		} else if t.Kind() != reflect.String {
 			r.Schema = swagger.MakeSchema(t)
 		}
 
