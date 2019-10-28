@@ -75,12 +75,12 @@ func init() {
 
 	RegisterCustomType(Date{}, Property{
 		Type:    "string",
-		Pattern: "^\\d\\d:\\d\\d:\\d\\d$",
+		Pattern: "^\\d\\d\\d\\d-\\d\\d-\\d\\d$",
 	})
 
 	RegisterCustomType(Time{}, Property{
 		Type:    "string",
-		Pattern: "^\\d\\d-\\d\\d-\\d\\d$",
+		Pattern: "^\\d\\d:\\d\\d:\\d\\d$",
 	})
 
 	RegisterCustomType(UUID(""), Property{

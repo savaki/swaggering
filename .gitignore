@@ -1,8 +1,4 @@
-# ignore intellij files
-/.idea
-/*.iml
-/*.ipr
-/*.iws
+/go.sum
 
 #ignore vscode files
 /.vscode
