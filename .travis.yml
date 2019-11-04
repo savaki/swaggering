@@ -1,10 +1,6 @@
 language: go
+
 go:
-- 1.7.x
-sudo: false
-install:
-  - go get github.com/stretchr/testify/assert
-  - go get github.com/labstack/echo
-  - go get github.com/gin-gonic/gin
-  - go get github.com/gorilla/mux
-  - go get github.com/julienschmidt/httprouter
+- 1.12
+
+script: env GO111MODULE=on go test -v ./...
