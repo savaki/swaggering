@@ -171,7 +171,7 @@ func TestGoogleOAuth2(t *testing.T) {
 
 	assert.Equal(t, scheme.Type, "oauth2")
 	assert.Equal(t, scheme.Flow, "implicit")
-	assert.Equal(t, scheme.AuthorizationURL, "")
+	assert.Equal(t, scheme.AuthorizationURL, "https://accounts.google.com/o/oauth2/v2/auth")
 	assert.Equal(t, scheme.TokenURL, "")
 
 	assert.Equal(t, scheme.Issuer, issuer)
