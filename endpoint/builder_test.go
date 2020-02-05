@@ -124,6 +124,34 @@ func TestQuery(t *testing.T) {
 	assert.Equal(t, expected, e.Parameters[0])
 }
 
+func TestQueryList(t *testing.T) {
+	expected := []swagger.Parameter{{
+		Name:        "id",
+		Description: "the description",
+		Required:    true,
+		Type:        "string",
+		Format:      "",
+	}, {
+		Name:        "other",
+		Description: "the description",
+		Required:    true,
+		Type:        "string",
+		Format:      "",
+	}}
+
+	e := endpoint.New("get", "/", "get thing",
+		endpoint.QueryList(expected),
+	)
+
+	for i := range expected {
+		expected[i].In = "query"
+	}
+
+	assert.Equal(t, 2, len(e.Parameters))
+	assert.Equal(t, expected[0], e.Parameters[0])
+	assert.Equal(t, expected[1], e.Parameters[1])
+}
+
 type Model struct {
 	String string `json:"s"`
 }
