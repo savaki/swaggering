@@ -177,7 +177,7 @@ func QueryList(params []swagger.Parameter) Option {
 
 		for i, param := range params {
 			if param.Name == "" {
-				panic(fmt.Errorf(`QueryList parameter %d: %v has an empty name`, i, param))
+				panic(fmt.Errorf(`QueryList parameter %d: %#v has an empty name`, i, param))
 			}
 			param.In = "query"
 			b.Endpoint.Parameters = append(b.Endpoint.Parameters, param)
