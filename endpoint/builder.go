@@ -168,6 +168,23 @@ func Query(name, typ, format, description string, required bool) Option {
 	return parameter(p)
 }
 
+// QueryList allows us to define multiple query parameters in a []struct format
+func QueryList(params []swagger.Parameter) Option {
+	return func(b *Builder) {
+		if b.Endpoint.Parameters == nil {
+			b.Endpoint.Parameters = []swagger.Parameter{}
+		}
+
+		for i, param := range params {
+			if param.Name == "" {
+				panic(fmt.Errorf(`QueryList parameter %d: %#v has an empty name`, i, param))
+			}
+			param.In = "query"
+			b.Endpoint.Parameters = append(b.Endpoint.Parameters, param)
+		}
+	}
+}
+
 // QueryMap allows us to define multiple query parameters in a map / struct format
 func QueryMap(params map[string]swagger.Parameter) Option {
 	return func(b *Builder) {
