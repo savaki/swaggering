@@ -157,6 +157,9 @@ func RequestHeader(name, typ, format, description string, required bool) Option 
 // Query defines a query parameter for the endpoint; name, typ, format, description, and required correspond to the matching
 // swagger fields
 func Query(name, typ, format, description string, required bool) Option {
+	if name[0] == '_' {
+		return func(b *Builder) {}
+	}
 	p := swagger.Parameter{
 		Name:        name,
 		In:          "query",
@@ -179,6 +182,9 @@ func QueryList(params []swagger.Parameter) Option {
 			if param.Name == "" {
 				panic(fmt.Errorf(`QueryList parameter %d: %#v has an empty name`, i, param))
 			}
+			if param.Name[0] == '_' {
+				continue
+			}
 			param.In = "query"
 			b.Endpoint.Parameters = append(b.Endpoint.Parameters, param)
 		}
@@ -193,6 +199,9 @@ func QueryMap(params map[string]swagger.Parameter) Option {
 		}
 
 		for k, v := range params {
+			if k[0] == '_' {
+				continue
+			}
 			v.Name = k
 			v.In = "query"
 			b.Endpoint.Parameters = append(b.Endpoint.Parameters, v)

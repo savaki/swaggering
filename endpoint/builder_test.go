@@ -125,6 +125,23 @@ func TestQuery(t *testing.T) {
 	assert.Equal(t, expected, e.Parameters[0])
 }
 
+func TestQueryPrivate(t *testing.T) {
+	expected := swagger.Parameter{
+		In:          "query",
+		Name:        "_id",
+		Description: "the description",
+		Required:    true,
+		Type:        "string",
+		Format:      "",
+	}
+
+	e := endpoint.New("get", "/", "get thing",
+		endpoint.Query(expected.Name, expected.Type, expected.Format, expected.Description, expected.Required),
+	)
+
+	assert.Equal(t, 0, len(e.Parameters))
+}
+
 func TestQueryList(t *testing.T) {
 	expected := []swagger.Parameter{{
 		Name:        "id",
@@ -132,21 +149,26 @@ func TestQueryList(t *testing.T) {
 		Required:    true,
 		Type:        "string",
 		Format:      "",
+		In:          "query",
 	}, {
 		Name:        "other",
 		Description: "the description",
 		Required:    true,
 		Type:        "string",
 		Format:      "",
+		In:          "query",
+	}, {
+		Name:        "_private",
+		Description: "the description",
+		Required:    true,
+		Type:        "string",
+		Format:      "",
+		In:          "query",
 	}}
 
 	e := endpoint.New("get", "/", "get thing",
 		endpoint.QueryList(expected),
 	)
-
-	for i := range expected {
-		expected[i].In = "query"
-	}
 
 	assert.Equal(t, 2, len(e.Parameters))
 	assert.Equal(t, expected[0], e.Parameters[0])
@@ -162,7 +184,43 @@ func TestQueryList(t *testing.T) {
 			)
 		},
 	)
+}
 
+func TestQueryMap(t *testing.T) {
+	expected := map[string]swagger.Parameter{
+		"id": {
+			Name:        "id",
+			Description: "the description",
+			Required:    true,
+			Type:        "string",
+			Format:      "",
+			In:          "query",
+		},
+		"other": {
+			Name:        "other",
+			Description: "the description",
+			Required:    true,
+			Type:        "string",
+			Format:      "",
+			In:          "query",
+		},
+		"_private": {
+			Name:        "_private",
+			Description: "the description",
+			Required:    true,
+			Type:        "string",
+			Format:      "",
+			In:          "query",
+		},
+	}
+
+	e := endpoint.New("get", "/", "get thing",
+		endpoint.QueryMap(expected),
+	)
+
+	assert.Equal(t, 2, len(e.Parameters))
+	assert.Equal(t, expected["id"], e.Parameters[0])
+	assert.Equal(t, expected["other"], e.Parameters[1])
 }
 
 type Model struct {
