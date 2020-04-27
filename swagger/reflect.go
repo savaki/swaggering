@@ -126,6 +126,7 @@ func inspect(t reflect.Type, tag *reflect.StructTag) Property {
 
 	case reflect.Ptr:
 		p.GoType = t.Elem()
+		p.Type = getType(t.Elem())
 		name := makeName(p.GoType)
 		p.Ref = makeRef(name)
 
@@ -166,6 +167,24 @@ func inspect(t reflect.Type, tag *reflect.StructTag) Property {
 	}
 
 	return p
+}
+
+func getType(t reflect.Type) string {
+	switch t.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Int64, reflect.Uint64:
+		return "integer"
+
+	case reflect.Float64, reflect.Float32:
+		return "number"
+
+	case reflect.Bool:
+		return "boolean"
+
+	case reflect.String:
+		return "string"
+	default:
+		return ""
+	}
 }
 
 func defineObject(v interface{}) Object {
