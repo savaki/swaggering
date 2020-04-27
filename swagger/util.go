@@ -20,6 +20,16 @@ import (
 	"strings"
 )
 
+var useFullPath int8 = 1
+
+func UseFullPathInName(flag bool) {
+	if flag {
+		useFullPath = 1
+	} else {
+		useFullPath = 0
+	}
+}
+
 func makeRef(name string) string {
 	return fmt.Sprintf("#/definitions/%v", name)
 }
@@ -32,7 +42,7 @@ type reflectType interface {
 func makeName(t reflectType) string {
 	var name string
 	pkgPath := t.PkgPath()
-	if pkgPath == "" {
+	if pkgPath == "" || useFullPath == 0 {
 		name = t.Name()
 	} else {
 		name = filepath.Base(pkgPath) + t.Name()
