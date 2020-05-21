@@ -17,11 +17,84 @@ package swagger
 import (
 	"reflect"
 	"strings"
+	"time"
 )
 
-func inspect(t reflect.Type, jsonTag string) Property {
+var customTypes map[reflect.Type]Property
+
+func init() {
+	customTypes = map[reflect.Type]Property{}
+
+	RegisterCustomType(time.Time{}, Property{
+		Type:   "string",
+		Format: "date-time",
+	})
+}
+
+// RegisterCustomType maps a reflect.Type to a pre-defined Property. This can be
+// used to handle types that implement json.Marshaler or other interfaces.
+// For example, a property with a Go type of time.Time would be represented as
+// an object when it should be a string.
+//
+//    RegisterCustomType(time.Time{}, Property{
+//      Type: "string",
+//      Format: "date-time",
+//    })
+//
+// Pointers to registered types will resolve to the same Property value unless
+// that pointer type has also been registered as a custom type.
+//
+// For example: registering time.Time will also apply to *time.Time, unless
+// *time.Time has also been registered.
+func RegisterCustomType(v interface{}, p Property) {
+	t := reflect.TypeOf(v)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+	p.GoType = t
+	customTypes[t] = p
+}
+
+func inspect(t reflect.Type, tag *reflect.StructTag) Property {
+	var jsonTag string
+	var desc string
+	var example string
+	var enum []string
+	if tag != nil {
+		jsonTag = tag.Get("json")
+		desc = tag.Get("description")
+		example = tag.Get("example")
+		if enums := tag.Get("enum"); enums != "" {
+			enum = strings.Split(enums, "|")
+		}
+	}
+	if p, ok := customTypes[t]; ok {
+		if p.Description == "" {
+			p.Description = desc
+		}
+		if p.Example == "" {
+			p.Example = example
+		}
+		return p
+	}
+
+	if t.Kind() == reflect.Ptr {
+		if p, ok := customTypes[t.Elem()]; ok {
+			if p.Description == "" {
+				p.Description = desc
+			}
+			if p.Example == "" {
+				p.Example = example
+			}
+			return p
+		}
+	}
+
 	p := Property{
-		GoType: t,
+		GoType:      t,
+		Description: desc,
+		Example:     example,
+		Enum:        enum,
 	}
 
 	if strings.Contains(jsonTag, ",string") {
@@ -58,6 +131,7 @@ func inspect(t reflect.Type, jsonTag string) Property {
 
 	case reflect.Ptr:
 		p.GoType = t.Elem()
+		p.Type = getType(t.Elem())
 		name := makeName(p.GoType)
 		p.Ref = makeRef(name)
 
@@ -100,6 +174,24 @@ func inspect(t reflect.Type, jsonTag string) Property {
 	return p
 }
 
+func getType(t reflect.Type) string {
+	switch t.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Int64, reflect.Uint64:
+		return "integer"
+
+	case reflect.Float64, reflect.Float32:
+		return "number"
+
+	case reflect.Bool:
+		return "boolean"
+
+	case reflect.String:
+		return "string"
+	default:
+		return ""
+	}
+}
+
 func defineObject(v interface{}) Object {
 	var required []string
 
@@ -122,7 +214,7 @@ func defineObject(v interface{}) Object {
 	}
 
 	if t.Kind() != reflect.Struct {
-		p := inspect(t, "")
+		p := inspect(t, nil)
 		return Object{
 			IsArray:  isArray,
 			GoType:   t,
@@ -138,6 +230,11 @@ func defineObject(v interface{}) Object {
 
 		// skip unexported fields
 		if strings.ToLower(field.Name[0:1]) == field.Name[0:1] {
+			continue
+		}
+
+		// skip fields tagged with `swagger:"-"`
+		if field.Tag.Get("swagger") == "-" {
 			continue
 		}
 
@@ -167,7 +264,7 @@ func defineObject(v interface{}) Object {
 			required = append(required, name)
 		}
 
-		p := inspect(field.Type, field.Tag.Get("json"))
+		p := inspect(field.Type, &field.Tag)
 		properties[name] = p
 	}
 
@@ -193,6 +290,9 @@ func define(v interface{}) map[string]Object {
 		dirty = false
 		for _, d := range objMap {
 			for _, p := range d.Properties {
+				if _, ok := customTypes[p.GoType]; ok {
+					continue
+				}
 				if p.GoType.Kind() == reflect.Struct {
 					name := makeName(p.GoType)
 					if _, exists := objMap[name]; !exists {

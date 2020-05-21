@@ -46,6 +46,7 @@ type Property struct {
 	Ref         string       `json:"$ref,omitempty"`
 	Example     string       `json:"example,omitempty"`
 	Items       *Items       `json:"items,omitempty"`
+	Pattern     string       `json:"pattern,omitempty"`
 }
 
 // Contact represents the contact entity from the swagger definition; used by Info

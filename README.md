@@ -71,6 +71,29 @@ api.Walk(func(path string, endpoint *swagger.Endpoint) {
 })
 ```
 
+### Custom Types
+
+For types implementing `json.Marshaler` whose JSON output does not match their Go types (such as `time.Time`),
+it is possible to override the default scanning of types and define a property manually.
+
+For example:
+
+```go
+type Person struct {
+  Name string `json:"name"`
+  Birthday time.Time `json:"birthday"`
+}
+
+func main() {
+  RegisterCustomType(time.Time{}, Property{
+    Type: "string",
+    Format: "date-time",
+  })
+}
+```
+
+`time.Time` is automatically registered as a custom type.
+
 ## Complete Example
 
 ```go
