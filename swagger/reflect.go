@@ -59,10 +59,14 @@ func inspect(t reflect.Type, tag *reflect.StructTag) Property {
 	var jsonTag string
 	var desc string
 	var example string
+	var enum []string
 	if tag != nil {
 		jsonTag = tag.Get("json")
 		desc = tag.Get("description")
 		example = tag.Get("example")
+		if enums := tag.Get("enum"); enums != "" {
+			enum = strings.Split(enums, "|")
+		}
 	}
 	if p, ok := customTypes[t]; ok {
 		if p.Description == "" {
@@ -90,6 +94,7 @@ func inspect(t reflect.Type, tag *reflect.StructTag) Property {
 		GoType:      t,
 		Description: desc,
 		Example:     example,
+		Enum:        enum,
 	}
 
 	if strings.Contains(jsonTag, ",string") {
